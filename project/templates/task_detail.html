@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block contents %}
+
+
+<h2>タスクの詳細</h2>
+
+<p>{{object.title}}</p>
+<p>{{object.content}}</p>
+<p>{{object.deadline_datetime}}</p>
+<p>{{object.added_at}}</p>
+
+
+
+<a href="{% url "project:task_edit" object.pk %}">編集する</a><br>
+<a href="{% url "project:task_delete" object.pk %}">削除する</a>
+
+
+<p><a href="{% url "project:task_list" object.project_id %}">タスクの一覧に戻る</a></p>
+<p><a href="{% url "project:project_detail" object.project_id %}">プロジェクトの詳細に戻る</a></p>
+
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+  {% block title %}{% endblock title %}
+  </title>
+  <link rel="stylesheet" href="{% static "css/style.css" %}">
+</head>
+<body>
+  <header>
+    <h1>
+      <a href="{% url "project:index" %}">
+        Good Feedback
+      </a>
+    </h1>
+    <ul>
+      {% if user.is_authenticated %}
+      <li><a href="{% url "account:logout" %}">ログアウト</a></li>
+      <li><a href="{% url "project:mypage" %}">マイページ</a></li>
+      {% else %}
+
+      <li><a href="{% url "account:login" %}">ログイン</a></li>
+      <li><a href="{% url "account:signup" %}">新規登録</a></li>
+      {% endif %}
+    </ul>
+  </header>
+  <main>
+
+    {% block contents %}{% endblock %}
+
+  </main>
+
+  <footer>
+    <p>
+      Good Feedback is &copy; omoteaki
+    </p>
+  </footer>
+</body>
+</html>

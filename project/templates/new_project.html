@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block contents %}
+
+<h1>新しくプロジェクトが作成されました！</h1>
+
+{{ object_list }}
+
+{{ object_list.created_user }}
+
+
+<a href="{% url "project:project_list" %}">{{request.user}}さんが作成したプロジェクト一覧はこちら</a>
+{% endblock %}

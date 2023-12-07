@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block contents %}
+
+<form action="">
+  {% csrf_token %}
+
+  {{form}}
+
+  <button type="submit">登録</button>
+
+</form>
+
+
+{% endblock %}

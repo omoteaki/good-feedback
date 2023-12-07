@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+
+{% block contents %}
+
+{% for record in object_list %}
+<a href="{% url "project:project_detail" record.pk %}">
+  {{record}}
+</a>
+<br>
+{% endfor %}
+
+
+{% endblock %}
