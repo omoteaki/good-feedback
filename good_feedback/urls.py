@@ -9,4 +9,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("project.urls")),
     path("account/", include("account.urls")),
+    path("feedback/", include("feedback.urls")),
 ]

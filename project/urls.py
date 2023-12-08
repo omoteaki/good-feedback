@@ -15,6 +15,8 @@ urlpatterns = [
     path('task-detail/<int:pk>', views.TaskDetailView.as_view(), name="task_detail"),
     path('task-edit/<int:pk>', views.TaskEditView.as_view(), name="task_edit"),
     path('task-delete/<int:pk>', views.TaskDeleteView.as_view(), name="task_delete"),
+    path('add-todo/<int:pk>/<int:project_id>', views.ToDoCreateView.as_view(), name="add_todo"),
+    path('todo-delete/<int:pk>', views.ToDoDeleteView.as_view(), name="todo_delete"),
 
 
     path('mypage', views.MypageView.as_view(), name="mypage"),

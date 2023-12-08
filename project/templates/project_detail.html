@@ -3,17 +3,35 @@
 {% block contents %}
 
 
+<p>プロジェクト名：{{project.title}}</p>
+<p>発注内容：{{project.about}}</p>
+
+<p>発注者：{{project.orderer_user}}</p>
+<p></p>
+<p>受注者：{{project.contractor_user}}</p>
 
 
-<p>{{object_list.0.title}}</p>
-<p>{{object_list.0.about}}</p>
-
-<a href="{% url "project:add_task" object_list.0.id %}">タスクを追加する</a>
+<a href="{% url "project:add_task" project.id %}">タスクを追加する</a>
 
 <ul>
-  {% for record in object_list.1 %}
-  <li><a href="{% url "project:task_detail" record.pk %}">{{record}}</a></li>  
+  {% for task in tasks %}
+  <li><a href="{% url "project:task_detail" task.pk %}">{{task}}</a></li>
+  <p>{{task.content}}</p>
+    <ul>
+      {% for feedback in feedbacks %}
+      {% if feedback.task.id == task.id %}
+      <li>{{feedback.comment}}</li>
+      {% endif %}
+      {% endfor %}
+    </ul>
   
+  {% endfor %}
+</ul>
+
+<p>このプロジェクトに関連するToDoリスト</p>
+<ul>
+  {% for todo in todo_list %}
+  <li>{{todo}} <a href="{% url "project:todo_delete" todo.pk %}">削除する</a></li>
   {% endfor %}
 </ul>
 
