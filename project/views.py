@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Max
 
 from .models import Project, Task, ToDo
+from feedback.models import Feedback
 from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm
 
 class IndexView(TemplateView):
@@ -57,13 +58,30 @@ class ProjectListView(ListView):
         return projects
     
 
-class ProjectDetailView(ListView):
+class ProjectDetailView(DetailView):
     template_name = "project_detail.html"
+    context_object_name = "project"
+    model = Project
 
-    def get_queryset(self):
-        project = Project.objects.get(id=self.kwargs["pk"])
-        tasks = Task.objects.filter(project_id=self.kwargs["pk"])
-        return (project, tasks)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tasks"] = Task.objects.filter(project_id=self.kwargs["pk"])
+        # context["feedbacks"] = Feedback.objects.all()
+        # 本当は、projectに紐づいている、taskに紐づいているfeedbackだけ取り出したい
+
+        # task_list = list(context["tasks"].values("id"))
+        # print(task_list)
+        # list1 = []
+        # for ta in task_list:
+        #     print(ta)
+        #     list1.append(ta["id"])
+        # print(list1)
+        context["feedbacks"] = Feedback.objects.filter(task_id__in=context["tasks"])
+
+        context["todo_list"] = ToDo.objects.filter(project_id=self.kwargs["pk"])
+        print(context["feedbacks"])
+        return context
     
 
 
@@ -132,19 +150,29 @@ class TaskDeleteView(DeleteView):
     
 
 # ToDo
-# class ToDoCreateView(CreateView):
-#     form_class = ToDoCreateForm
-#     template_name = "add_todo.html"
+class ToDoCreateView(CreateView):
+    form_class = ToDoCreateForm
+    template_name = "add_todo.html"
 
-#     def get_success_url(self):
-#         return reverse_lazy("project:task_list", kwargs={"id": self.kwargs["id"]})
+    def get_success_url(self):
+        return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["project_id"]})
 
-#     def form_valid(self, form):
-#         new_task = form.save(commit=False)
-#         new_task.project_id = self.kwargs["id"]
-#         new_task.save()
-#         # self.object = new_task
-#         return super().form_valid(form)
+    def form_valid(self, form):
+        new_task = form.save(commit=False)
+        new_task.project_id = self.kwargs["project_id"]
+        new_task.task_id = self.kwargs["pk"]
+        new_task.save()
+        print(self.kwargs["pk"])
+        # self.object = new_task
+        return super().form_valid(form)
+    
+class ToDoDeleteView(DeleteView):
+    model = ToDo
+    template_name = "task_delete.html"
+    success_url = reverse_lazy("project:index")
+
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
 
 
 

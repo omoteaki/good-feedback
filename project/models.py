@@ -174,3 +174,5 @@ class ToDo(models.Model):
         verbose_name="関連するプロジェクト",
         on_delete=models.CASCADE,
     )
+    def __str__(self):
+        return self.title

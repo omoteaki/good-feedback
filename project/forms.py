@@ -65,4 +65,5 @@ class AddTaskForm(forms.ModelForm):
 class ToDoCreateForm(forms.ModelForm):
     class Meta:
         model = ToDo
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ("project", "task")
