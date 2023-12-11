@@ -3,6 +3,33 @@ from django.contrib.auth.models import AbstractUser
 
 
 
+class CustomUser(AbstractUser):
+    pass
+    # detail1 = models.ForeignKey(
+    #     UserDetail,
+    #     verbose_name="お仕事プロフィール1(デフォルト)",
+    #     on_delete=models.PROTECT,
+    #     related_name="detail1",
+    #     blank=True,
+    #     null=True,
+    # )
+    # detail2 = models.ForeignKey(
+    #     UserDetail,
+    #     verbose_name="お仕事プロフィール2",
+    #     on_delete=models.PROTECT,
+    #     blank=True,
+    #     null=True,
+    #     related_name="detail2",
+    # )
+    # detail3 = models.ForeignKey(
+    #     UserDetail,
+    #     verbose_name="お仕事プロフィール3",
+    #     on_delete=models.PROTECT,
+    #     blank=True,
+    #     null=True,
+    #     related_name="detail3",
+    # )
+
 class UserDetail(models.Model):
     profile = models.TextField(
         verbose_name="仕事内容"
@@ -31,30 +58,23 @@ class UserDetail(models.Model):
         max_length=50,
         choices=CONTACT
     )
-
-
-class CustomUser(AbstractUser):
-    detail1 = models.ForeignKey(
-        UserDetail,
-        verbose_name="お仕事プロフィール1(デフォルト)",
-        on_delete=models.PROTECT,
-        related_name="detail1",
+    user = models.ForeignKey(
+        CustomUser,
+        verbose_name="ユーザー",
+        on_delete=models.CASCADE,
         blank=True,
         null=True,
     )
-    detail2 = models.ForeignKey(
-        UserDetail,
-        verbose_name="お仕事プロフィール2",
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
-        related_name="detail2",
+
+    LABEL = (
+        ("detail1", "プロフィール1(デフォルト)"),
+        ("detail2", "プロフィール2"),
+        ("detail3", "プロフィール3"),
+
     )
-    detail3 = models.ForeignKey(
-        UserDetail,
-        verbose_name="お仕事プロフィール3",
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
-        related_name="detail3",
+
+    label_select = models.CharField(
+        verbose_name="ラベル",
+        max_length=50,
+        choices=LABEL
     )

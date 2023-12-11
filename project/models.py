@@ -169,6 +169,10 @@ class ToDo(models.Model):
         verbose_name="関連するタスク",
         on_delete=models.CASCADE,
     )
+    is_done = models.BooleanField(
+        default=False,
+        help_text="todoを完了させたらTrue"
+    )
     project = models.ForeignKey(
         Project,
         verbose_name="関連するプロジェクト",

@@ -1,18 +1,44 @@
+from typing import Any
 from django.shortcuts import render
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max
+from django.db.models import Count, Max, Min, Avg
 
 from .models import Project, Task, ToDo
 from feedback.models import Feedback
+from account.models import UserDetail
 from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm
 
-class IndexView(TemplateView):
+class IndexView(ListView):
     template_name = "index.html"
 
+
+    def get_queryset(self):
+        if  self.request.user.is_authenticated:
+            request_user_projects = Project.objects.filter(created_user=self.request.user)
+            return request_user_projects
+        else:
+            pass
+    def get_context_data(self, **kwargs):
+        if  self.request.user.is_authenticated:
+            context = super().get_context_data(**kwargs)
+            context["details"] = UserDetail.objects.filter(user=self.request.user)
+            print(context["details"])
+            return context
+        else:
+            pass
+
+
+# class MypageView(ListView):
+#     template_name = "mypage.html"
+
+#     def get_queryset(self):
+#         request_user_projects = Project.objects.filter(created_user=self.request.user)
+#         return request_user_projects
+    
 
 class AboutUsView(TemplateView):
     template_name = "about_us.html"
@@ -66,7 +92,7 @@ class ProjectDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["tasks"] = Task.objects.filter(project_id=self.kwargs["pk"])
+        context["tasks"] = Task.objects.filter(project_id=self.kwargs["pk"]).annotate(count=Count("feedback"))
         # context["feedbacks"] = Feedback.objects.all()
         # 本当は、projectに紐づいている、taskに紐づいているfeedbackだけ取り出したい
 
@@ -80,7 +106,8 @@ class ProjectDetailView(DetailView):
         context["feedbacks"] = Feedback.objects.filter(task_id__in=context["tasks"])
 
         context["todo_list"] = ToDo.objects.filter(project_id=self.kwargs["pk"])
-        print(context["feedbacks"])
+        for task in context["tasks"]:
+            print(task.count)
         return context
     
 
@@ -166,6 +193,25 @@ class ToDoCreateView(CreateView):
         # self.object = new_task
         return super().form_valid(form)
     
+class ToDoDoneView(UpdateView):
+    template_name = "add_todo.html"
+    model = ToDo
+    fields = [
+        "title",
+    ]
+
+    def get_success_url(self):
+        return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["project_id"]})
+
+    def form_valid(self, form):
+        task = form.save(commit=False)
+        task.project_id = self.kwargs["project_id"]
+        task.is_done = True
+
+        task.save()
+        print(self.kwargs["pk"])
+        return super().form_valid(form)    
+    
 class ToDoDeleteView(DeleteView):
     model = ToDo
     template_name = "task_delete.html"
@@ -175,11 +221,3 @@ class ToDoDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-
-class MypageView(ListView):
-    template_name = "mypage.html"
-
-    def get_queryset(self):
-        request_user_projects = Project.objects.filter(created_user=self.request.user)
-        return request_user_projects
-    

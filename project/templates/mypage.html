@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% comment %} {% extends "base.html" %} {% endcomment %}
 
 
-{% block contents %}
+{% comment %} {% block contents %} {% endcomment %}
 
 
 
@@ -12,13 +12,27 @@
 </p>
 <ul>
   {% for record in object_list %}
-  <li><a href="{% url "project:project_detail" record.pk %}">{{record}}</a></li>
+  <li><a href="{% url "project:project_detail" record.pk %}">{{record}}</a><span>締め切り日時：{{record.deadline_datetime}}</span></li>
   {% endfor %}
 </ul>
 
 <h4><a href="{% url "project:create_project" %}">
   プロジェクトの新規作成
 </a></h4>
+
+
+{% if details %}
+{% for detail in details %}
+{{detail.label_select}}
+{% endfor %}
+<p>お仕事プロフィールを編集する</p>
+
+<p>
+  <a href="">
+    フィードバックルールの編集
+  </a>
+</p>
+{% else %}
 
 <p>まだ{{request.user}}さんのお仕事プロフィールが登録されていません。</p>
 <p>
@@ -27,12 +41,8 @@
   </a>
 </p>
 
+{% endif %}
 
 
-<p>
-  <a href="">
-    フィードバックルールの編集
-  </a>
-</p>
-{% endblock contents %}
+{% comment %} {% endblock contents %} {% endcomment %}
 
