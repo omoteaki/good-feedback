@@ -43,10 +43,23 @@
   {% endfor %}
 </ul>
 
+<ul class="list-group">
+  {% for task in tasks %}
+
+  <li class="list-group-item d-flex justify-content-between align-items-start">
+    <div class="ms-2 me-auto">
+      <div class="fw-bold">Subheading</div>
+      Content for list item
+    </div>
+    <span class="badge bg-primary rounded-pill">14</span>
+  </li>
+
+</ul>
+
 <p>このプロジェクトに関連するToDoリスト</p>
 <ul>
   {% for todo in todo_list %}
-  <li">{{todo}}<a href="{% url "project:todo_checked" todo.pk project.pk %}">完了</a> <a href="{% url "project:todo_delete" todo.pk %}">削除する</a>
+  <li>{{todo}}<a href="{% url "project:todo_checked" todo.pk project.pk %}">完了</a> <a href="{% url "project:todo_delete" todo.pk %}">削除する</a>
   {% if todo.is_done %}
 終わってます{% endif %}</li>
   {% endfor %}
