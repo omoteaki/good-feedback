@@ -25,3 +25,21 @@ class FeedbackCreateView(CreateView):
         feedback.save()
         return super().form_valid(form)
     
+
+class FeedbackReplyView(CreateView):
+    template_name = "add_feedback.html"
+    form_class = FeedbackForm
+
+    def get_success_url(self):
+        return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["project_id"]})
+    
+
+    def form_valid(self, form):
+        feedback = form.save(commit=False)
+
+        feedback.user = self.request.user
+        feedback.task_id = self.kwargs["task_id"]
+        feedback.self_id = self.kwargs["feedback_id"]
+        feedback.save()
+        return super().form_valid(form)
+    

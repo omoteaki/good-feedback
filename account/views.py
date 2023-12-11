@@ -2,6 +2,7 @@ from django.views.generic import CreateView, TemplateView
 from django.urls import reverse_lazy
 
 from .forms import CustomUserCreationForm, UserDetailForm
+from .models import CustomUser, UserDetail
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -20,9 +21,12 @@ class SignUpSuccessView(TemplateView):
 class UserDetailCreate(CreateView):
     form_class = UserDetailForm
     template_name = "create_feedback_rule.html"
-    success_url = reverse_lazy("project:mypage")
+    success_url = reverse_lazy("project:index")
 
-    def form_valid(self, form):
-        detail = form.save()
-        self.object = detail
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     detail = form.save(commit=False)
+    #     detail.user = self.request.user
+    #     detail.save()
+    #     user_detail1 = CustomUser.save(commit=False)
+    #     user_detail1.detail1 = UserDetail.objects.get()
+    #     return super().form_valid(form)

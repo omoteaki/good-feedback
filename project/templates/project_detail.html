@@ -18,11 +18,26 @@
   <li><a href="{% url "project:task_detail" task.pk %}">{{task}}</a></li>
   <p>{{task.content}}</p>
     <ul>
-      {% for feedback in feedbacks %}
+    {% for feedback in feedbacks %}
       {% if feedback.task.id == task.id %}
-      <li>{{feedback.comment}}</li>
+        {% if feedback.self == null %}
+        <li>{{feedback.comment}}<a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}">返信する{{feedback.pk}}</a></li>
+
+
+        {% else %}
+        <ul>
+
+        
+        <li>{{feedback.self.id}}{{feedback.comment}}<a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}">返信する{{feedback.pk}}</a></li>
+        
+        </ul>
+
+
+
+
+        {% endif %}
       {% endif %}
-      {% endfor %}
+    {% endfor %}
     </ul>
   
   {% endfor %}
@@ -31,7 +46,9 @@
 <p>このプロジェクトに関連するToDoリスト</p>
 <ul>
   {% for todo in todo_list %}
-  <li>{{todo}} <a href="{% url "project:todo_delete" todo.pk %}">削除する</a></li>
+  <li">{{todo}}<a href="{% url "project:todo_checked" todo.pk project.pk %}">完了</a> <a href="{% url "project:todo_delete" todo.pk %}">削除する</a>
+  {% if todo.is_done %}
+終わってます{% endif %}</li>
   {% endfor %}
 </ul>
 
