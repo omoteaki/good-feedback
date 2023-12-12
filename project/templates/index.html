@@ -4,15 +4,10 @@
 
 {% block contents %}
 
-{% if user.is_authenticated %}
-
-{% include "mypage.html" %}
-
-{% else %}
-
-{% include "introduction.html" %}
-
-{% endif %}
-
+  {% if user.is_authenticated %}
+    {% include "mypage.html" %}
+  {% else %}
+    {% include "introduction.html" %}
+  {% endif %}
 
 {% endblock %}

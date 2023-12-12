@@ -1,18 +1,152 @@
 {% extends "base.html" %}
 
+
+
+
 {% block contents %}
 
+{% if request.user != project.created_user and request.user != project.constractor_user and request.user != project.orderer_user %}
 
-<p>プロジェクト名：{{project.title}}</p>
-<p>発注内容：{{project.about}}</p>
+閲覧権がありません
+
+{% else %}
+
+
+<div class="container" id="featured-3">
+{% comment %} <div class="container px-4 py-5" id="featured-3"> {% endcomment %}
+  <h2 class="pb-2 border-bottom">プロジェクト : {{project.title}}
+    
+{% if request.user == project.orderer_user %}
+<span>
+
+  <a href="{% url "project:project_update" project.pk %}" class="fs-6">編集できます</a>
+</span>
+{% endif %}
+  </h2>
+  {% comment %} <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+    <div class="feature col">
+      <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+        <svg class="bi" width="1em" height="1em"><use xlink:href="#collection"></use></svg>
+      </div>
+      <h3 class="fs-2 text-body-emphasis">Featured title</h3>
+      <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+      <a href="#" class="icon-link">
+        Call to action
+        <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
+      </a>
+    </div>
+    <div class="feature col">
+      <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+        <svg class="bi" width="1em" height="1em"><use xlink:href="#people-circle"></use></svg>
+      </div>
+      <h3 class="fs-2 text-body-emphasis">Featured title</h3>
+      <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+      <a href="#" class="icon-link">
+        Call to action
+        <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
+      </a>
+    </div>
+    <div class="feature col">
+      <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+        <svg class="bi" width="1em" height="1em"><use xlink:href="#toggles2"></use></svg>
+      </div>
+      <h3 class="fs-2 text-body-emphasis">Featured title</h3>
+      <p>Paragraph of text beneath the heading to explain the heading. We'll add onto it with another sentence and probably just keep going until we run out of words.</p>
+      <a href="#" class="icon-link">
+        Call to action
+        <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
+      </a>
+    </div>
+  </div> {% endcomment %}
+</div>
+
+<div class="container">
+
+
+
+<p>発注内容 : <br>
+  {{project.about|linebreaksbr}}</p>
 
 <p>発注者：{{project.orderer_user}}</p>
 <p></p>
 <p>受注者：{{project.contractor_user}}</p>
 
+{% comment %} 
+<div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
+  <div class="list-group">
+    <label class="list-group-item d-flex gap-3">
+      <input class="form-check-input flex-shrink-0" type="checkbox" value="" checked="" style="font-size: 1.375em;">
+      <span class="pt-1 form-checked-content">
+        <strong>Finish sales report</strong>
+        <small class="d-block text-body-secondary">
+          <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#calendar-event"></use></svg>
+          1:00–2:00pm
+        </small>
+      </span>
+    </label>
+    <label class="list-group-item d-flex gap-3">
+      <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;">
+      <span class="pt-1 form-checked-content">
+        <strong>Weekly All Hands</strong>
+        <small class="d-block text-body-secondary">
+          <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#calendar-event"></use></svg>
+          2:00–2:30pm
+        </small>
+      </span>
+    </label>
+    <label class="list-group-item d-flex gap-3">
+      <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;">
+      <span class="pt-1 form-checked-content">
+        <strong>Out of office</strong>
+        <small class="d-block text-body-secondary">
+          <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#alarm"></use></svg>
+          Tomorrow
+        </small>
+      </span>
+    </label>
+    <label class="list-group-item d-flex gap-3 bg-body-tertiary">
+      <input class="form-check-input form-check-input-placeholder bg-body-tertiary flex-shrink-0 pe-none" disabled="" type="checkbox" value="" style="font-size: 1.375em;">
+      <span class="pt-1 form-checked-content">
+        <span contenteditable="true" class="w-100">Add new task...</span>
+        <small class="d-block text-body-secondary">
+          <i class="bi bi-list-check"></i>
 
-<a href="{% url "project:add_task" project.id %}">タスクを追加する</a>
+          Choose list...
+        </small>
+      </span>
+    </label>
+  </div>
+</div> {% endcomment %}
 
+<div class="list-group">
+  {% for task in tasks %}
+  
+  <a href="{% url "project:task_detail" task.pk %}" class="list-group-item d-flex justify-content-between align-items-start">
+      <div class="ms-2 me-auto">
+        <div class="fw-bold">{{task}}</div>
+        {{task.content}}
+      </div>
+      <span class="badge bg-primary rounded-pill">feedback:{{task.count}}</span>
+  </a>
+  {% endfor %}
+  <a href="{% url "project:add_task" project.id %}" class="list-group-item d-flex justify-content-between align-items-start">
+    <div class="ms-2 me-auto">
+      <div class="fw-bold">＋タスクを追加する</div>
+    </div>
+  </a>
+
+</div>
+
+<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">フィードバックを確認する</button>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">フィードバック</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    ...
+    
 <ul>
   {% for task in tasks %}
   <li><a href="{% url "project:task_detail" task.pk %}">{{task}}</a></li>
@@ -31,10 +165,6 @@
         <li>{{feedback.self.id}}{{feedback.comment}}<a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}">返信する{{feedback.pk}}</a></li>
         
         </ul>
-
-
-
-
         {% endif %}
       {% endif %}
     {% endfor %}
@@ -42,14 +172,46 @@
   
   {% endfor %}
 </ul>
+  </div>
+</div>
+
+
+
+{% if request.user == project.contractor_user %}
 
 <p>このプロジェクトに関連するToDoリスト</p>
+
+<ul class="list-group">
+  {% for todo in todo_list %}
+
+  <li class="list-group-item d-flex">
+    <input class="form-check-input me-1" type="checkbox" value="" id="todoNum{{todo.pk}}" {% if todo.is_done %}
+    checked{% endif %}>
+    <label class="form-check-label" for="todoNum{{todo.pk}}">{{todo}}</label>
+
+    <a href="{% url "project:todo_delete" todo.pk %}" class=" ms-auto">
+      
+      <i class="bi bi-trash"></i>
+    </a>
+  </li>
+  {% endfor %}
+
+</ul>
+
+{% endif %}
+
+
 <ul>
   {% for todo in todo_list %}
-  <li">{{todo}}<a href="{% url "project:todo_checked" todo.pk project.pk %}">完了</a> <a href="{% url "project:todo_delete" todo.pk %}">削除する</a>
+  <li>{{todo}}<a href="{% url "project:todo_checked" todo.pk project.pk %}">完了</a> <a href="{% url "project:todo_delete" todo.pk %}">削除する</a>
   {% if todo.is_done %}
 終わってます{% endif %}</li>
   {% endfor %}
 </ul>
+
+
+</div>
+
+{% endif %}
 
 {% endblock %}

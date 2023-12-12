@@ -1,48 +1,50 @@
-{% comment %} {% extends "base.html" %} {% endcomment %}
+<div class="container">
+
+  <h2>ようこそ{{request.user}}さん</h2>
+
+  <p>
+  {{request.user}}さんが携わっているプロジェクト一覧
+  </p>
 
 
-{% comment %} {% block contents %} {% endcomment %}
-
-
-
-<h2>ようこそ{{request.user}}さん</h2>
-
-<p>
-{{request.user}}さんが携わっているプロジェクト一覧
-</p>
-<ul>
   {% for record in object_list %}
-  <li><a href="{% url "project:project_detail" record.pk %}">{{record}}</a><span>締め切り日時：{{record.deadline_datetime}}</span></li>
+  <a href="{% url "project:project_detail" record.pk %}" class="card mb-3 text-decoration-none">
+    <div class="card-body">
+      <h5 class="card-title">{{record}}</h5>
+      {% comment %} <p class="card-text">{{record.about}}</p> {% endcomment %}
+      <p class="card-text"><small class="text-body-secondary">{{record.deadline_datetime}}</small></p>
+    </div>
+    
+  </a>
   {% endfor %}
-</ul>
 
-<h4><a href="{% url "project:create_project" %}">
-  プロジェクトの新規作成
-</a></h4>
-
-
-{% if details %}
-{% for detail in details %}
-{{detail.label_select}}
-{% endfor %}
-<p>お仕事プロフィールを編集する</p>
-
-<p>
-  <a href="">
-    フィードバックルールの編集
-  </a>
-</p>
-{% else %}
-
-<p>まだ{{request.user}}さんのお仕事プロフィールが登録されていません。</p>
-<p>
-  <a href="{% url "account:create_feedback_rule" %}">
-    お仕事プロフィールの登録はこちら
-  </a>
-</p>
-
-{% endif %}
+  <h4><a href="{% url "project:create_project" %}">
+    プロジェクトの新規作成
+  </a></h4>
 
 
-{% comment %} {% endblock contents %} {% endcomment %}
+  {% if details %}
+  {% for detail in details %}
+  {{detail.label_select}}
+  {% endfor %}
+  <p>お仕事プロフィールを編集する</p>
+
+  <p>
+    <a href="">
+      フィードバックルールの編集
+    </a>
+  </p>
+  {% else %}
+
+  <p>まだ{{request.user}}さんのお仕事プロフィールが登録されていません。</p>
+  <p>
+    <a href="{% url "account:create_feedback_rule" %}">
+      お仕事プロフィールの登録はこちら
+    </a>
+  </p>
+
+  {% endif %}
+
+</div>
+
 
