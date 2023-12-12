@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Max, Min, Avg
+from django.db.models import Q
 
 from .models import Project, Task, ToDo
 from feedback.models import Feedback
@@ -18,7 +19,7 @@ class IndexView(ListView):
 
     def get_queryset(self):
         if  self.request.user.is_authenticated:
-            request_user_projects = Project.objects.filter(created_user=self.request.user)
+            request_user_projects = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user))
             return request_user_projects
         else:
             pass
@@ -82,6 +83,10 @@ class ProjectListView(ListView):
     def get_queryset(self):
         projects = Project.objects.filter(created_user= self.request.user)
         return projects
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     print(self.object_list)
+    #     return context
     
 
 class ProjectDetailView(DetailView):
@@ -111,6 +116,34 @@ class ProjectDetailView(DetailView):
         return context
     
 
+class ProjectUpdateView(UpdateView):
+    template_name = "create_project.html"
+    model = Project
+    fields = [
+        "title",
+        "about",
+        "deadline_datetime",
+
+    ]
+
+    # def get_success_url(self):
+    #     return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["project_id"]})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["created_user_id"] = self.request.user
+        return context
+    
+    def get_success_url(self):
+        return reverse_lazy("project:create_project_done", kwargs={"created_user_id": self.request.user.id})
+
+    def form_valid(self, form):
+        new_project = form.save(commit=False)
+        # new_project.created_user = self.request.user
+        new_project.save()
+        # create_user_id
+
+        return super().form_valid(form)
 
 
 
@@ -147,6 +180,14 @@ class TaskListView(ListView):
 class TaskDetailView(DetailView):
     template_name = "task_detail.html"
     model = Task
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["feedbacks"] = Feedback.objects.filter(task_id=self.object)
+        context["todos"] = ToDo.objects.filter(task_id=self.object)
+        print(context["feedbacks"])
+        return context
+    
 
 class TaskEditView(UpdateView):
     template_name = "task_edit.html"
