@@ -4,40 +4,36 @@ from django import forms
 from .models import Project, Task, ToDo
 
 class CreateProjectForm(forms.ModelForm):
-    date = forms.DateField
-    time = forms.TimeField
-
+    date = forms.DateField(label="日にち")
+    time = forms.TimeField(label="時間")
     class Meta:
         model = Project
-        fields = "__all__"
-        # fields += ("time", "")
-        # fields = exclude
-        # print(fields)
-        # fields = [
-        #     "title",
-        #     "about",
-        #     "deadline_datetime",
-        #     "reference_image1",
-        #     "reference_image2",
-        #     "reference_image3",
-        #     "reference_movie1",
-        #     "reference_movie2",
-        #     "reference_movie3",
-        #     "reference_music1",
-        #     "reference_music2",
-        #     "reference_music3",
-        #     "reference_url1",
-        #     "reference_url2",
-        #     "reference_url3",
-        #     # "created_at",
-        #     # "updated_at",
-        #     "orderer_user",
-        #     "contractor_user",
-        #     "orderer_users",
-        #     "contractor_users",
-        #     "time",
-        #     "date",
-        # ]
+        fields = [
+            "title",
+            "about",
+            "deadline_datetime",
+            "time",
+            "date",
+            "reference_image1",
+            "reference_image2",
+            "reference_image3",
+            "reference_movie1",
+            "reference_movie2",
+            "reference_movie3",
+            "reference_music1",
+            "reference_music2",
+            "reference_music3",
+            "reference_url1",
+            "reference_url2",
+            "reference_url3",
+            # "created_at",
+            # "updated_at",
+            "orderer_user",
+            "contractor_user",
+            "orderer_users",
+            "contractor_users",
+
+        ]
 
         # widgets = {
         #     'deadline_datetime': forms.Textarea

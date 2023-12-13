@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "account.apps.AccountConfig",
     "project.apps.ProjectConfig",
     "feedback.apps.FeedbackConfig",
+    "widget_tweaks",
 ]
 
 MIDDLEWARE = [
