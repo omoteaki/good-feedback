@@ -14,7 +14,7 @@
   
   <ul>
     {% for feedback in feedbacks %}
-    <li>{{feedback.comment}}</li>
+    <li>{{feedback.comment}} <span>{{feedback.user}}</span> </li>
     {% endfor %}
   </ul>
   <ul>

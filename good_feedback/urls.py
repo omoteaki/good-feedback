@@ -11,3 +11,8 @@ urlpatterns = [
     path("account/", include("account.urls")),
     path("feedback/", include("feedback.urls")),
 ]
+
+urlpatterns += static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT
+)
