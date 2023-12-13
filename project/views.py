@@ -100,19 +100,15 @@ class ProjectDetailView(DetailView):
         context["tasks"] = Task.objects.filter(project_id=self.kwargs["pk"]).annotate(count=Count("feedback"))
         # context["feedbacks"] = Feedback.objects.all()
         # 本当は、projectに紐づいている、taskに紐づいているfeedbackだけ取り出したい
-
-        # task_list = list(context["tasks"].values("id"))
-        # print(task_list)
-        # list1 = []
-        # for ta in task_list:
-        #     print(ta)
-        #     list1.append(ta["id"])
-        # print(list1)
         context["feedbacks"] = Feedback.objects.filter(task_id__in=context["tasks"])
+        # context["test"] = Feedback.objects.select_related('self').filter(task_id__in=context["tasks"])
+        # print(context["test"])
 
         context["todo_list"] = ToDo.objects.filter(project_id=self.kwargs["pk"])
-        for task in context["tasks"]:
-            print(task.count)
+        # print(context["project"].orderer_users)
+        # print(context["project"].contractor_users.all)
+        # for us in context["project"].contractor_users.all:
+        #     print(us)
         return context
     
 
