@@ -6,6 +6,15 @@ from .models import Project, Task, ToDo
 class CreateProjectForm(forms.ModelForm):
     date = forms.DateField(label="日にち")
     time = forms.TimeField(label="時間")
+    deadline_datetime = forms.DateTimeField(required=False)
+    # widgets = {
+    #     'date': forms.NumberInput(attrs={
+    #         "type": "date"
+    #     }),
+    #     'time': forms.NumberInput(attrs={
+    #         "type": "time"
+    #     })
+    # }
     class Meta:
         model = Project
         fields = [
@@ -28,24 +37,61 @@ class CreateProjectForm(forms.ModelForm):
             "reference_url3",
             # "created_at",
             # "updated_at",
-            "orderer_user",
+            # "orderer_user",
             "contractor_user",
             "orderer_users",
-            "contractor_users",
+            # "contractor_users",
 
         ]
 
         # widgets = {
         #     'deadline_datetime': forms.Textarea
         # }
+
+
         # widgets = {
-        #     'date': forms.NumberInput(attrs={
-        #         "type": "date"
-        #     }),
-        #     'time': forms.NumberInput(attrs={
-        #         "type": "time"
-        #     })
+        #     "deadline_datetime": forms.widgets.SplitDateTimeWidget
         # }
+class UpdateProjectForm(forms.ModelForm):
+    date = forms.DateField(label="日にち", initial="2023/12/24")
+    time = forms.TimeField(label="時間", initial="12:00")
+    deadline_datetime = forms.DateTimeField(required=False)
+
+    
+
+    class Meta:
+        model = Project
+        fields = [
+            "title",
+            "about",
+            "deadline_datetime",
+            "time",
+            "date",
+            # "reference_image1",
+            # "reference_image2",
+            # "reference_image3",
+            # "reference_movie1",
+            # "reference_movie2",
+            # "reference_movie3",
+            # "reference_music1",
+            # "reference_music2",
+            # "reference_music3",
+            # "reference_url1",
+            # "reference_url2",
+            # "reference_url3",
+            # # "created_at",
+            # # "updated_at",
+            # # "orderer_user",
+            # "contractor_user",
+            # "orderer_users",
+            # # "contractor_users",
+
+        ]
+
+        # widgets = {
+        #     'deadline_datetime': forms.Textarea
+        # }
+
 
         # widgets = {
         #     "deadline_datetime": forms.widgets.SplitDateTimeWidget

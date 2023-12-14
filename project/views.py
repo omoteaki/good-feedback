@@ -1,6 +1,9 @@
 from typing import Any
 from django.shortcuts import render
 
+from datetime import date, time, datetime
+from zoneinfo import ZoneInfo
+
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -11,15 +14,16 @@ from django.db.models import Q
 from .models import Project, Task, ToDo
 from feedback.models import Feedback
 from account.models import UserDetail
-from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm
+from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm, UpdateProjectForm
 
+
+# ログインしていなかったらindex、ログインユーザーならマイページ
 class IndexView(ListView):
     template_name = "index.html"
 
-
     def get_queryset(self):
         if  self.request.user.is_authenticated:
-            request_user_projects = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user))
+            request_user_projects = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).exclude(is_done=True)
             return request_user_projects
         else:
             pass
@@ -28,18 +32,11 @@ class IndexView(ListView):
             context = super().get_context_data(**kwargs)
             context["details"] = UserDetail.objects.filter(user=self.request.user)
             print(context["details"])
+            context["closed_project"] = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).filter(is_done=True)
             return context
         else:
             pass
 
-
-# class MypageView(ListView):
-#     template_name = "mypage.html"
-
-#     def get_queryset(self):
-#         request_user_projects = Project.objects.filter(created_user=self.request.user)
-#         return request_user_projects
-    
 
 class AboutUsView(TemplateView):
     template_name = "about_us.html"
@@ -62,14 +59,30 @@ class CreateProjectView(CreateView):
     def form_valid(self, form):
         new_project = form.save(commit=False)
         new_project.created_user = self.request.user
+        new_project.orderer_user = self.request.user
+        new_project.deadline_datetime = datetime.combine(form.cleaned_data["date"], form.cleaned_data["time"], tzinfo=ZoneInfo(key='Asia/Tokyo'))
         new_project.save()
-        # create_user_id
+
+        project_data = form.cleaned_data
+        project_data["time"] = ""
+        project_data["date"] = ""
+        project_data["deadline_datetime"] = ""
+        project_data["contractor_user"] = ""
+        project_data["orderer_users"] = ""
+        if not 'form_project' in self.request.session:
+            self.request.session['form_project'] = project_data
+        print(project_data["title"])
 
         return super().form_valid(form)
 
 class CreateProjectSuccessView(ListView):
     template_name = "new_project.html"
     # model = Project
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["new_project"] = self.request.session["form_project"]
+        return context
 
     def get_queryset(self):
         print(self.request.user)
@@ -101,11 +114,10 @@ class ProjectDetailView(DetailView):
         # context["feedbacks"] = Feedback.objects.all()
         # 本当は、projectに紐づいている、taskに紐づいているfeedbackだけ取り出したい
         context["feedbacks"] = Feedback.objects.filter(task_id__in=context["tasks"])
-        # context["test"] = Feedback.objects.select_related('self').filter(task_id__in=context["tasks"])
-        # print(context["test"])
 
         context["todo_list"] = ToDo.objects.filter(project_id=self.kwargs["pk"])
-        # print(context["project"].orderer_users)
+        context["detail"] = UserDetail.objects.filter(user_id=self.object.contractor_user)
+        print(context["detail"])
         # print(context["project"].contractor_users.all)
         # for us in context["project"].contractor_users.all:
         #     print(us)
@@ -113,17 +125,29 @@ class ProjectDetailView(DetailView):
     
 
 class ProjectUpdateView(UpdateView):
-    template_name = "create_project.html"
+    template_name = "update_project.html"
     model = Project
-    fields = [
-        "title",
-        "about",
-        "deadline_datetime",
 
-    ]
 
-    # def get_success_url(self):
-    #     return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["project_id"]})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["date"] = self.object.deadline_datetime.date()
+        context["time"] = self.object.deadline_datetime.time()
+        context["test"] = "hoge"
+        print(context["test"])
+        return context
+    
+    # model.time = model.deadline_datetime.time()
+    # model.date = model.deadline_datetime.date()
+    form_class = UpdateProjectForm
+    # fields = [
+    #     "title",
+    #     "about",
+    #     "time",
+    #     "date",
+    #     "deadline_datetime",  
+    # ]
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -135,11 +159,28 @@ class ProjectUpdateView(UpdateView):
 
     def form_valid(self, form):
         new_project = form.save(commit=False)
-        # new_project.created_user = self.request.user
+        new_project.deadline_datetime = datetime.combine(form.cleaned_data["date"], form.cleaned_data["time"], tzinfo=ZoneInfo(key='Asia/Tokyo'))
+
         new_project.save()
-        # create_user_id
 
         return super().form_valid(form)
+
+class ProjectDoneView(UpdateView):
+    template_name = "project_done.html"
+    success_url = reverse_lazy("project:project_done_success")
+
+    model = Project
+    fields = [
+        "is_done",
+    ]
+
+    def form_valid(self, form):
+        project = form.save(commit=False)
+        project.save()
+        return super().form_valid(form)
+    
+class ProjectDoneSuccessView(TemplateView):
+    template_name = "project_done_success.html"
 
 
 

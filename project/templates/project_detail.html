@@ -123,6 +123,7 @@
         </div>
     
         <button class="btn btn-primary mt-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">フィードバックを確認する</button>
+        <a class="btn btn-secondary mt-3" href="{% url "project:project_done" project.pk %}">プロジェクトを終了する</a>
     
         <!--フィードバック表示画面-->
         
@@ -242,6 +243,9 @@
         </p>
         {% endif %}
         <p>受注者 : {{project.contractor_user}}さん{% if project.contractor_user == request.user %}(あなた){% endif %}</p>
+        {% for de in detail %}
+        <p>{{de.profile}}</p>
+        {% endfor %}
 
         {% if project.contractor_users.all %}
         <p>受注者のサポート : 

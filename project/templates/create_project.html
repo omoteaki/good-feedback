@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 
 {% block contents %}
 
@@ -7,16 +8,45 @@
 <form action="" method="post">
   
   {% csrf_token %}
+{% comment %} {{form}} {% endcomment %}
 
-  <div class="mb-3">
-    <label class="form-label" for="id_title">プロジェクトのタイトル</label>
-    <input class="form-control" type="text" name="title" maxlength="30" required id="id_title">
+
+{% for field in form %}
+{% if field == form.time or field == form.date or field == form.deadline_datetime %}
+
+
+{% else %}
+
+
+
+<div class="mb-3">
+  <label class="form-label" for="{{field.id_for_label}}">{{field.label}}</label>
+  {% render_field field class="form-control" %}
+  {{field.errors}}
+  {% for error in field.errors %}
+  <p>{{error}}</p>
+  {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+
+<div class="mb-3">
+  <div class="form-label">締切日時</div>
+  <div class="row">
+    <div class="col">
+      <input class="form-control" type="date" name="date" required id="id_date">
+    </div>
+    <div class="col">
+      <input class="form-control" type="time" name="time" required id="id_time" >
+    </div>
   </div>
+</div>
+
+{% comment %} 
 
   <div class="mb-3">
     <label class="form-label" for="id_about">このプロジェクトについて</label>
-    <textarea class="form-control" name="about" cols="40" rows="10" required id="id_about">
-    </textarea>
+    <textarea class="form-control" name="about" cols="40" rows="10" required id="id_about"></textarea>
   </div>
 
   
@@ -38,10 +68,7 @@
 
 </select>
 
-  {% comment %} <div class="mb-3">
-    <label class="form-label" for="id_deadline_datetime">締め切り日時</label>
-    <input class="form-control" type="text" name="deadline_datetime" required id="id_deadline_datetime">
-  </div> {% endcomment %}
+
 
 
   <div class="mb-3">
@@ -123,7 +150,7 @@
   
     
     
-  </div>
+  </div> {% endcomment %}
 
   <button type="submit" class="btn btn-primary">作成する</button>
 </form>
