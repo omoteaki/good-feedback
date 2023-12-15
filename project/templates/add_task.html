@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 
+
 {% block contents %}
-<form action="" method="post">
-  {% csrf_token %}
-  {{form.as_p}}
-  <button type="submit">タスクを追加する</button>
-  
-</form>
+
+<div class="container">
+
+{% include "_form.html" %}
+
+</div>
+
+
+<a href="{% url "project:project_detail" pk %}"></a>
+
 {% endblock %}

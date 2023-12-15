@@ -1,15 +1,29 @@
 <div class="container my-6">
 
   <h5>
-    {{request.user}}さんのプロフィール
+    {{request.user}}さんの管理ページ
   </h5>
+
+
+  <div class="alert alert-warning" role="alert">
+    お仕事の依頼が届いています！
+  </div>
+  <p></p>
+  <a href="">プロジェクト「フィードバックルールの設定をお願いします」</a>
   <p>
     <a href="">
       フィードバックルールの編集
     </a>
   </p>
 
-  
+  <div class="row">
+    <div class="col">
+      <a class="btn btn-primary" href="{% url "project:create_project" %}" role="button">プロジェクトを作成して仕事を依頼する</a>
+      
+    </div>
+    <div class="col">
+      <a href="" class="btn btn-secondary">フィードバックルールを設定して、仕事を受ける</a>
+      
   {% if details %}
   {% for detail in details %}
   <div class="card mb-3">
@@ -37,6 +51,13 @@
 
   {% endif %}
 
+    </div>
+  </div>
+
+  <div class="">
+    現在進行中のプロジェクト
+  </div>
+  
 
   <p>
   {{request.user}}さんが携わっているプロジェクト一覧
@@ -58,7 +79,6 @@
   </div>
 
 
-  <a class="btn btn-primary mt-3" href="{% url "project:create_project" %}" role="button">＋新規プロジェクトの作成</a>
 
 </div>
 

@@ -1,2 +1,63 @@
-<h3>登録が完了しました</h3>
-<p><a href="{% url "account:login" %}">ログインはこちら</a></p>
+{% extends "base.html" %}
+
+{% block contents %}
+
+<div class="container">
+
+  <h3>ようこそ！</h3>
+  
+  <p>登録が完了しました！</p>
+  <p>確認のため、パスワードを入力してログインをしてください</p>
+  
+
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="row mb-3">
+      <label for="Username" class="col-sm-2 col-form-label">
+        ユーザーID</label>
+      <!-- name属性の値はLoginViewで定義されているフィールド名username -->
+      <div class="col-sm-10">
+        <input type="text"
+          name="username"
+          id="id_username"
+          maxlength="150"
+          autocapitalize="none"
+          autocomplete="username"
+          class="form-control"
+          placeholder="お手数ですがユーザーIDの再入力をお願いします。"
+          value="{{new_user}}"
+          required>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <label for="Password" class="col-sm-2 col-form-label">
+        パスワード</label>
+        <!-- name属性の値はLoginViewで定義されているフィールド名password -->
+      <div class="col-sm-10">
+
+        <input type="password"
+          name="password"
+          id="id_password"
+          autocomplete="current-password"
+          class="form-control"
+          placeholder="パスワード"
+          required autofocus>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">ログインして始める！</button>
+
+    <input type="hidden"
+      name="next"
+      value="{% url 'project:index' %}">
+  </form>
+
+
+
+  <p><a href="{% url "account:login" %}">ログインはこちら</a></p>
+
+</div>
+
+{% endblock %}

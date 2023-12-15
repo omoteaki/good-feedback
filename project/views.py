@@ -191,16 +191,18 @@ class AddTaskView(CreateView):
     success_url = reverse_lazy("project:task_list")
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["button_message"] = "タスクを追加する"
+        context["pk"] = self.kwargs["pk"]
         print(context)
         print(self.kwargs)
         return context
 
     def get_success_url(self):
-        return reverse_lazy("project:task_list", kwargs={"id": self.kwargs["id"]})
+        return reverse_lazy("project:task_list", kwargs={"pk": self.kwargs["pk"]})
 
     def form_valid(self, form):
         new_task = form.save(commit=False)
-        new_task.project_id = self.kwargs["id"]
+        new_task.project_id = self.kwargs["pk"]
         new_task.save()
         # self.object = new_task
         return super().form_valid(form)
@@ -210,7 +212,7 @@ class TaskListView(ListView):
     template_name = "task_list.html"
 
     def get_queryset(self):
-        Tasks = Task.objects.filter(project_id=self.kwargs["id"])
+        Tasks = Task.objects.filter(project_id=self.kwargs["pk"])
         return Tasks
 
 

@@ -114,7 +114,7 @@
           </a>
         {% endfor %}
         {% if request.user == project.orderer_user %}
-          <a href="{% url "project:add_task" project.id %}" class="list-group-item d-flex justify-content-between align-items-start">
+          <a href="{% url "project:add_task" project.pk %}" class="list-group-item d-flex justify-content-between align-items-start">
             <div class="ms-2 me-auto">
               <div class="fw-bold">＋タスクを追加する</div>
             </div>
