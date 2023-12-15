@@ -1,27 +1,114 @@
-<h3>新規登録</h3>
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block contents %}
+
+<div class="container">
+  <h3>新規登録</h3>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label" for="{{form.username.id_for_label}}">ユーザーID</label>
+      <div class="col-sm-10">
+
+        {% render_field form.username class="form-control" %}
+      </div>
+      {% if form.username.help_text %}
+      <div class="form-text offset-sm-2">{{ form.username.help_text }}</div>
+      {% endif %}
+      {% for error in form.username.errors %}
+      <p style="color: red;">{{ error }}</p>
+      {% endfor %}
+    </div>
 
 
-<form method="post">
-  {% csrf_token %}
-  {% for field in form %}
-  <p>
-    {{ field.label_tag }}<br>
-    {{ field }}
-    {% if field.help_text %}
-    <small style="color: gray;">{{ field.help_text }}</small>
-    {% endif %}
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label" for="">お名前</label>
+      <div class="col">
+        {% comment %} <label class="col-sm-2 col-form-label" for="">{{form.last_name.label}}</label> {% endcomment %}
+        <div class="">
+  
+          {% render_field form.last_name class="form-control" %}
+        </div>
+        {% if form.last_name.help_text %}
+        <div class="form-text">{{ form.last_name.help_text }}</div>
+        {% endif %}
+        {% for error in form.last_name.errors %}
+        <p style="color: red;">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="col">
+        {% comment %} <label class="col-sm-2 col-form-label" for="{{form.first_name.id_for_label}}">{{form.first_name.label}}</label> {% endcomment %}
+        <div class="">
+          {% render_field form.first_name class="form-control" %}
+        </div>
+        {% if form.first_name.help_text %}
+        <div class="form-text">{{ form.first_name.help_text }}</div>
+        {% endif %}
+        {% for error in form.first_name.errors %}
+        <p style="color: red;">{{ error }}</p>
+        {% endfor %}
+      </div>
+    </div>
 
-    {% for error in field.errors %}
-    <p style="color: red;">{{ error }}</p>
-    {% endfor %}
+
+
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label" for="{{form.email.id_for_label}}">{{form.email.label}}</label>
+      <div class="col-sm-10">
+
+        {% render_field form.email class="form-control" required="required" %}
+      </div>
+      {% if form.email.help_text %}
+      <div class="form-text">{{ form.email.help_text }}</div>
+      {% endif %}
+      <div class="form-text offset-sm-2">※メールアドレスはパスワードをリセットする際に必要になりますので、登録をお願いします。</div>
+      {% for error in form.email.errors %}
+      <p style="color: red;">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label" for="{{form.password1.id_for_label}}">{{form.password1.label}}</label>
+      <div class="col-sm-10">
+
+        {% render_field form.password1 class="form-control" %}
+      </div>
+      {% if form.password1.help_text %}
+      <div class="form-text offset-sm-2">{{ form.password1.help_text }}</div>
+      {% endif %}
+      {% for error in form.password1.errors %}
+      <p style="color: red;">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="row mb-3">
+      <label class="col-sm-2 col-form-label" for="{{form.password2.id_for_label}}">パスワード:確認用</label>
+      <div class="col-sm-10">
+
+        {% render_field form.password2 class="form-control" %}
+      </div>
+      {% if form.password2.help_text %}
+      <div class="form-text offset-sm-2">{{ form.password2.help_text }}</div>
+      {% endif %}
+      {% for error in form.password2.errors %}
+      <p style="color: red;">{{ error }}</p>
+      {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">新規登録</button>
+
+  </form>
+
+
+
+
+  <br>
+  <p><a href="{% url "project:index" %}">
+    登録をやめてトップページに戻る</a>
   </p>
-  {% endfor %}
-  <p style="color: red;">
-    ※メールアドレスはパスワードをリセットする際に必要になりますので、登録をお願いします。
-  </p>
-  <input type="submit" value="Sign up">
-</form>
-<br>
-<p><a href="{% url "project:index" %}">
-  登録をやめてトップページに戻る</a>
-</p>
+
+
+</div>
+
+{% endblock %}

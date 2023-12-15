@@ -1,11 +1,161 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 
 {% block contents %}
+
+<div class="container">
+
 <form action="" method="post">
   
   {% csrf_token %}
-  {{ form.as_p }}
+{% comment %} {{form}} {% endcomment %}
+
+
+{% for field in form %}
+{% if field == form.time or field == form.date or field == form.deadline_datetime %}
+
+
+{% else %}
+
+
+
+<div class="mb-3">
+  <label class="form-label" for="{{field.id_for_label}}">{{field.label}}</label>
+  {% render_field field class="form-control" %}
+  {{field.errors}}
+  {% for error in field.errors %}
+  <p>{{error}}</p>
+  {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+
+<div class="mb-3">
+  <div class="form-label">締切日時</div>
+  <div class="row">
+    <div class="col">
+      <input class="form-control" type="date" name="date" required id="id_date">
+    </div>
+    <div class="col">
+      <input class="form-control" type="time" name="time" required id="id_time" >
+    </div>
+  </div>
+</div>
+
+{% comment %} 
+
+  <div class="mb-3">
+    <label class="form-label" for="id_about">このプロジェクトについて</label>
+    <textarea class="form-control" name="about" cols="40" rows="10" required id="id_about"></textarea>
+  </div>
+
   
-  <button type="submit">作成する</button>
+  <div class="mb-3">
+    <label class="form-label" for="id_contractor_user">発注先ユーザー名</label>
+    <input class="form-control" type="text" name="contractor_user" maxlength="30" required id="id_contractor_user">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_orderer_users">発注者のサポーター</label>
+    <select name="orderer_users" id="id_orderer_users" multiple>
+  <option value="1">admin</option>
+
+  <option value="3">test</option>
+
+  <option value="4">test2</option>
+
+  <option value="5">test3</option>
+
+</select>
+
+
+
+
+  <div class="mb-3">
+    <div class="form-label">締切日時</div>
+    <div class="row">
+      <div class="col">
+        <input class="form-control" type="date" name="date" required id="id_date">
+      </div>
+      <div class="col">
+        <input class="form-control" type="time" name="time" required id="id_time" >
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_image1">参考画像1</label>
+    <input class="form-control" type="file" name="reference_image1" accept="image/*" id="id_reference_image1">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_image2">参考画像2</label>
+    <input class="form-control" type="file" name="reference_image2" accept="image/*" id="id_reference_image2">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_image3">参考画像3</label>
+    <input class="form-control" type="file" name="reference_image3" accept="image/*" id="id_reference_image3">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_movie1">参考動画1</label>
+    <input class="form-control" type="file" name="reference_movie1" id="id_reference_movie1">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_movie2">参考動画2</label>
+    <input class="form-control" type="file" name="reference_movie2" id="id_reference_movie2">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_movie3">参考動画3</label>
+    <input class="form-control" type="file" name="reference_movie3" id="id_reference_movie3">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_music1">参考音源1</label>
+    <input class="form-control" type="file" name="reference_music1" id="id_reference_music1">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_music2">参考音源2</label>
+    <input class="form-control" type="file" name="reference_music2" id="id_reference_music2">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_music3">参考音源3</label>
+    <input class="form-control" type="file" name="reference_music3" id="id_reference_music3">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_url1">参考URL1</label>
+    <input class="form-control" type="url" name="reference_url1" maxlength="200" id="id_reference_url1">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_url2">参考URL2</label>
+    <input class="form-control" type="url" name="reference_url2" maxlength="200" id="id_reference_url2">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="id_reference_url3">参考URL3</label>
+    <input class="form-control" type="url" name="reference_url3" maxlength="200" id="id_reference_url3">
+  </div>
+
+
+
+  
+    
+    
+  </div> {% endcomment %}
+
+  <button type="submit" class="btn btn-primary">作成する</button>
 </form>
+
+
+</div>
+
 {% endblock %}

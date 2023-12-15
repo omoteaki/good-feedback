@@ -1,0 +1,16 @@
+<div class="container">
+
+
+
+  <h3>プロジェクトを終了させます。</h3>
+  <p>本当によろしいですか？</p>
+
+
+  <form action="" method="post">
+    {% csrf_token %}
+    {{form}}
+    <button type="submit">終了する</button>
+  </form>
+  <a href="{% url "project:project_detail" project.pk %}">プロジェクト詳細に戻る</a>
+  
+</div>

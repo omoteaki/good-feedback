@@ -1,10 +1,29 @@
 <div class="container my-6">
 
   <h5>
-    {{request.user}}さんのプロフィール
+    {{request.user}}さんの管理ページ
   </h5>
 
-  
+
+  <div class="alert alert-warning" role="alert">
+    お仕事の依頼が届いています！
+  </div>
+  <p></p>
+  <a href="">プロジェクト「フィードバックルールの設定をお願いします」</a>
+  <p>
+    <a href="">
+      フィードバックルールの編集
+    </a>
+  </p>
+
+  <div class="row">
+    <div class="col">
+      <a class="btn btn-primary" href="{% url "project:create_project" %}" role="button">プロジェクトを作成して仕事を依頼する</a>
+      
+    </div>
+    <div class="col">
+      <a href="" class="btn btn-secondary">フィードバックルールを設定して、仕事を受ける</a>
+      
   {% if details %}
   {% for detail in details %}
   <div class="card mb-3">
@@ -20,11 +39,7 @@
 
   {% endfor %}
 
-  <p>
-    <a href="">
-      フィードバックルールの編集
-    </a>
-  </p>
+
   {% else %}
 
   <p>まだ{{request.user}}さんのお仕事プロフィールが登録されていません。</p>
@@ -36,26 +51,32 @@
 
   {% endif %}
 
+    </div>
+  </div>
+
+  <div class="">
+    現在進行中のプロジェクト
+  </div>
+  
 
   <p>
   {{request.user}}さんが携わっているプロジェクト一覧
   </p>
 
 
-  {% for record in object_list %}
-  <a href="{% url "project:project_detail" record.pk %}" class="card mb-3 text-decoration-none">
-    <div class="card-body d-flex">
-      <h5 class="card-title">{{record}}</h5>
-      {% comment %} <p class="card-text">{{record.about}}</p> {% endcomment %}
-      <p class="card-text ms-auto"><small class="text-body-secondary">{{record.deadline_datetime}}</small></p>
-    </div>
-    
-  </a>
+  {% for f_p in closed_project %}
+  
+    {{f_p}}
   {% endfor %}
+  <div class="list-group">
+  {% for record in object_list %}
 
-  <h4><a href="{% url "project:create_project" %}">
-    プロジェクトの新規作成
-  </a></h4>
+    <a href="{% url "project:project_detail" record.pk %}" class="list-group-item list-group-item-action">{{record}}<small class="text-body-secondary">{{record.deadline_datetime}}</small></a>
+
+
+    
+  {% endfor %}
+  </div>
 
 
 

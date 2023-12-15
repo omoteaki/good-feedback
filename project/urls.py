@@ -11,8 +11,10 @@ urlpatterns = [
     path('project/<int:pk>', views.ProjectDetailView.as_view(), name="project_detail"),
     path('new-project/<int:created_user_id>', views.CreateProjectSuccessView.as_view(), name="create_project_done"),
     path('project-update/<int:pk>', views.ProjectUpdateView.as_view(), name="project_update"),
-    path('add-task/<int:id>', views.AddTaskView.as_view(), name="add_task"),
-    path('task-list/<int:id>', views.TaskListView.as_view(), name="task_list"),
+    path('project-done/<int:pk>', views.ProjectDoneView.as_view(), name="project_done"),
+    path('project-finish', views.ProjectDoneSuccessView.as_view(), name="project_done_success"),
+    path('add-task/<int:pk>', views.AddTaskView.as_view(), name="add_task"),
+    path('task-list/<int:pk>', views.TaskListView.as_view(), name="task_list"),
     path('task-detail/<int:pk>', views.TaskDetailView.as_view(), name="task_detail"),
     path('task-edit/<int:pk>', views.TaskEditView.as_view(), name="task_edit"),
     path('task-delete/<int:pk>', views.TaskDeleteView.as_view(), name="task_delete"),
@@ -21,6 +23,5 @@ urlpatterns = [
     path('todo-delete/<int:pk>', views.ToDoDeleteView.as_view(), name="todo_delete"),
 
 
-    # path('mypage', views.MypageView.as_view(), name="mypage"),
     path('about', views.AboutUsView.as_view(), name="about_us"),
 ]

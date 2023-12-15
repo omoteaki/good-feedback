@@ -123,6 +123,10 @@ class Project(models.Model):
         on_delete=models.PROTECT,
         related_name="created_user"
     )
+    is_done = models.BooleanField(
+        default=False,
+        help_text="プロジェクトが完了したらTrue"
+    )
 
     def __str__(self):
         return self.title

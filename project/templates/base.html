@@ -24,6 +24,8 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 pe-5">
+          {% if user.is_authenticated %}
+
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url "project:index" %}">マイページ</a>
           </li>
@@ -31,7 +33,6 @@
             <a class="nav-link" href="{% url "project:project_list" %}">プロジェクト</a>
           </li>
 
-          {% if user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               ユーザー設定
@@ -47,8 +48,8 @@
           </li>
 
           {% else %}
-          <li class="nav-item"><a href="{% url "account:login" %}">ログイン</a></li>
-          <li class="nav-item"><a href="{% url "account:signup" %}">新規登録</a></li>
+          <li class="nav-item"><a class="nav-link active" href="{% url "account:login" %}">ログイン</a></li>
+          <li class="nav-item"><a class="nav-link active" href="{% url "account:signup" %}">新規登録</a></li>
 
           {% endif %}
         </ul>
