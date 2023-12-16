@@ -5,42 +5,45 @@
 
 <div class="container">
 
-<form action="" method="post">
+  <form action="" method="post">
   
   {% csrf_token %}
-{% comment %} {{form}} {% endcomment %}
 
-
-{% for field in form %}
-{% if field == form.time or field == form.date or field == form.deadline_datetime %}
-
-
-{% else %}
-
-
-
-<div class="mb-3">
-  <label class="form-label" for="{{field.id_for_label}}">{{field.label}}</label>
-  {% render_field field class="form-control" %}
-  {{field.errors}}
-  {% for error in field.errors %}
-  <p>{{error}}</p>
-  {% endfor %}
-</div>
-{% endif %}
-{% endfor %}
-
-<div class="mb-3">
-  <div class="form-label">締切日時</div>
-  <div class="row">
-    <div class="col">
-      <input class="form-control" type="date" name="date" required id="id_date">
+  {% for field in form %}
+  {% comment %} {% if field == form.deadline_datetime %} {% endcomment %}
+{% comment %} 
+  <div class="mb-3">
+    <div class="form-label">締切日時</div>
+    <div class="row">
+      <div class="col">
+        <input class="form-control" type="date" name="date" required id="id_date">
+      </div>
+      <div class="col">
+        <input class="form-control" type="time" name="time" required id="id_time" >
+      </div>
     </div>
-    <div class="col">
-      <input class="form-control" type="time" name="time" required id="id_time" >
-    </div>
+  </div> {% endcomment %}
+
+  {% comment %} {% elif field == form.time or field == form.date %} {% endcomment %}
+
+
+  {% comment %} {% else %} {% endcomment %}
+
+
+
+  <div class="mb-3">
+    <label class="form-label" for="{{field.id_for_label}}">{{field.label}}</label>
+    {% render_field field class="form-control" %}
+    {% comment %} {{field}} {% endcomment %}
+    {{field.errors}}
+    {% for error in field.errors %}
+    <p>{{error}}</p>
+    {% endfor %}
   </div>
-</div>
+  {% comment %} {% endif %} {% endcomment %}
+  {% endfor %}
+
+
 
 {% comment %} 
 

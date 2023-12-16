@@ -2,7 +2,7 @@ from typing import Any
 from django.shortcuts import render
 
 from datetime import date, time, datetime
-from zoneinfo import ZoneInfo
+from backports.zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -14,7 +14,7 @@ from django.db.models import Q
 from .models import Project, Task, ToDo
 from feedback.models import Feedback
 from account.models import UserDetail
-from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm, UpdateProjectForm
+from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm, UpdateProjectForm, ProjectProposeForm
 
 
 # ログインしていなかったらindex、ログインユーザーならマイページ
@@ -33,6 +33,7 @@ class IndexView(ListView):
             context["details"] = UserDetail.objects.filter(user=self.request.user)
             print(context["details"])
             context["closed_project"] = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).filter(is_done=True)
+            context["ordered_project_list"] = Project.objects.filter(contractor_user=self.request.user).filter(is_accepted=False)
             return context
         else:
             pass
@@ -40,6 +41,32 @@ class IndexView(ListView):
 
 class AboutUsView(TemplateView):
     template_name = "about_us.html"
+
+
+class ProposeProjectView(UpdateView):
+    # template_name = "propose_project.html"
+    form_class = ProjectProposeForm
+    template_name = "propose_project.html"
+    model = Project
+    context_object_name = "project"
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["test"] = self
+    #     print(context["test"])
+    #     return context
+    # def form_valid(self, form):
+    #     form
+    #     print
+    #     return super().form_valid(form)
+    
+    # def form_invalid(self, form):
+    #     response = super().form_invalid(form)
+    #     # response
+    #     print(form)
+    #     return
+    
+    
+
 
 
 @method_decorator(login_required, name="dispatch")
@@ -60,18 +87,18 @@ class CreateProjectView(CreateView):
         new_project = form.save(commit=False)
         new_project.created_user = self.request.user
         new_project.orderer_user = self.request.user
-        new_project.deadline_datetime = datetime.combine(form.cleaned_data["date"], form.cleaned_data["time"], tzinfo=ZoneInfo(key='Asia/Tokyo'))
+        # new_project.deadline_datetime = datetime.combine(form.cleaned_data["date"], form.cleaned_data["time"], tzinfo=ZoneInfo(key='Asia/Tokyo'))
         new_project.save()
 
         project_data = form.cleaned_data
-        project_data["time"] = ""
-        project_data["date"] = ""
+        # project_data["time"] = ""
+        # project_data["date"] = ""
+        print(project_data["title"])
         project_data["deadline_datetime"] = ""
         project_data["contractor_user"] = ""
         project_data["orderer_users"] = ""
         if not 'form_project' in self.request.session:
             self.request.session['form_project'] = project_data
-        print(project_data["title"])
 
         return super().form_valid(form)
 

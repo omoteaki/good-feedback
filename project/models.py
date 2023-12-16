@@ -1,6 +1,6 @@
 from django.db import models
 
-from account.models import CustomUser
+from account.models import CustomUser, UserDetail
 
 class Project(models.Model):
     title = models.CharField(
@@ -9,6 +9,10 @@ class Project(models.Model):
     )
     about = models.TextField(
         verbose_name="このプロジェクトについて"
+    )
+    purpose = models.TextField(
+        verbose_name="このプロジェクトで実現したいこと",
+        null=True
     )
     deadline_datetime = models.DateTimeField(
         verbose_name="締め切り日時",
@@ -126,6 +130,17 @@ class Project(models.Model):
     is_done = models.BooleanField(
         default=False,
         help_text="プロジェクトが完了したらTrue"
+    )
+    is_accepted = models.BooleanField(
+        default=False,
+        help_text="プロジェクトを確認してもらえたらTrue"
+    )
+    feedback_rule = models.ForeignKey(
+        UserDetail,
+        verbose_name="受注した人が設定したフィードバックルール",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
     )
 
     def __str__(self):

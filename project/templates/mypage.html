@@ -5,11 +5,23 @@
   </h5>
 
 
+  {% if ordered_project_list %}
   <div class="alert alert-warning" role="alert">
     お仕事の依頼が届いています！
   </div>
+  <ul>
+
+    {% for ordered_project in ordered_project_list %}
+    <li>
+      <a href="{% url "project:propose_project" ordered_project.pk %}">{{ordered_project}}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  
   <p></p>
-  <a href="">プロジェクト「フィードバックルールの設定をお願いします」</a>
+  {% endif %}
+
+
   <p>
     <a href="">
       フィードバックルールの編集
