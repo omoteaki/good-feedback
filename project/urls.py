@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.IndexView.as_view(), name="index"),
     path('new-project-create/', views.CreateProjectView.as_view(), name="create_project"),
     path('new-project-propose/<int:pk>', views.ProposeProjectView.as_view(), name="propose_project"),
+    path('new-project/feedback-set/<int:pk>', views.SetFeedbackView.as_view(), name="feedback_set"),
     path('project-list/', views.ProjectListView.as_view(), name="project_list"),
     path('project/<int:pk>', views.ProjectDetailView.as_view(), name="project_detail"),
     path('new-project/<int:created_user_id>', views.CreateProjectSuccessView.as_view(), name="create_project_done"),

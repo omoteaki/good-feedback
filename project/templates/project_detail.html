@@ -13,7 +13,7 @@
 
 
 
-  <div class="container" id="featured-3">
+  <div class="container " id="featured-3">
 
     <h3 class="pb-2 border-bottom">プロジェクト : {{project.title}}
     {% if request.user == project.orderer_user %}
@@ -34,7 +34,7 @@
         <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">参考資料</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" disabled>Disabled</button>
+        <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" >フィードバックルール</button>
       </li>
     </ul>
 
@@ -274,7 +274,13 @@
 
 
       </div>
-      <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div>
+
+
+
+      <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
+        フィードバックルール
+        {{project.feedback_rule.rule}}
+      </div>
     </div>
 
 

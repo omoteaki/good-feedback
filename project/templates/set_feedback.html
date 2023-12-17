@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block contents %}
+
+<div class="container">
+
+  <p>まだプロジェクトは開始していません</p>
+  <h4>フィードバックルールを設定して、プロジェクトを開始しましょう</h4>
+
+  {% if user_detail_list %}
+
+  <form action="" method="post">
+
+    {% csrf_token %}
+    {{form}}
+    <button type="submit">フィードバックを設定して、プロジェクトを開始する</button>
+
+  </form>
+
+
+
+
+<div id="selectedContent">
+{% comment %} <div class="testclass"></div>
+<div class="testclass"></div> {% endcomment %}
+  <!-- 選択された内容が表示される部分 -->
+</div>
+{% else %}
+<p>{{request.user}}さんはまだフィードバックルールのテンプレートが設定されていません。サンプルを参考にフィードバックルールを設定してください。<small>(一度テンプレートを保存すると他のプロジェクトでも使うことができます)</small></p>
+
+<a href="{% url "account:create_feedback_rule" %}">フィードバックルールを設定する</a>
+{% endif %}
+
+
+</div>
+
+
+<script>
+  // セレクトボックスで選択された内容を表示する関数
+  function displaySelected() {
+    // 選択されたオプションの値を取得
+    var selectedOption = $('#id_feedback_rule').val();
+
+
+    // 選択された内容を表示する部分にセット
+    $('.testclass').html('<strong>選択された内容:</strong> <span style="color: red;">' + selectedOption + '</span>');
+  }
+</script>
+
+
+{% endblock %}

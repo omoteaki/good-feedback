@@ -13,7 +13,7 @@ from django.db.models import Q
 
 from .models import Project, Task, ToDo
 from feedback.models import Feedback
-from account.models import UserDetail
+from account.models import UserDetail, CustomUser
 from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm, UpdateProjectForm, ProjectProposeForm
 
 
@@ -44,28 +44,44 @@ class AboutUsView(TemplateView):
 
 
 class ProposeProjectView(UpdateView):
-    # template_name = "propose_project.html"
     form_class = ProjectProposeForm
     template_name = "propose_project.html"
     model = Project
     context_object_name = "project"
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context["test"] = self
-    #     print(context["test"])
-    #     return context
-    # def form_valid(self, form):
-    #     form
-    #     print
-    #     return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("project:feedback_set", kwargs={"pk": self.kwargs["pk"]})
+
+    def form_valid(self, form):
+        project = form.save(commit=False)
+        project.save()
+        return super().form_valid(form)
+
+class SetFeedbackView(UpdateView):
+    model = Project
+    template_name = "set_feedback.html"
+    fields = [
+        "feedback_rule"
+    ]
+
+    def get_success_url(self):
+        return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["pk"]})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_detail_list"] = UserDetail.objects.filter(user_id=self.request.user)
+        print(context["user_detail_list"])
+        print(context["form"].fields["feedback_rule"].queryset)
+        context["form"].fields["feedback_rule"].queryset = UserDetail.objects.filter(user=self.request.user)
+        print(context["form"].fields["feedback_rule"].queryset)
+        return context
     
-    # def form_invalid(self, form):
-    #     response = super().form_invalid(form)
-    #     # response
-    #     print(form)
-    #     return
+    def form_valid(self, form):
+        detail_set = form.save(commit=False)
+        detail_set.save()
+        return super().form_valid(form)
     
-    
+
 
 
 
@@ -151,6 +167,8 @@ class ProjectDetailView(DetailView):
         return context
     
 
+
+# プロジェクトの発注者だけがプロジェクト全体の編集が可能
 class ProjectUpdateView(UpdateView):
     template_name = "update_project.html"
     model = Project
@@ -191,6 +209,8 @@ class ProjectUpdateView(UpdateView):
         new_project.save()
 
         return super().form_valid(form)
+
+
 
 class ProjectDoneView(UpdateView):
     template_name = "project_done.html"

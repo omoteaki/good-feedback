@@ -106,57 +106,13 @@ class UpdateProjectForm(forms.ModelForm):
 
 
 class ProjectProposeForm(forms.ModelForm):
-    deadline_datetime = forms.SplitDateTimeField()
-    # about = forms.CharField()
-    # widgets = {
-    #     'date': forms.NumberInput(attrs={
-    #         "type": "date"
-    #     }),
-    #     'time': forms.NumberInput(attrs={
-    #         "type": "time"
-    #     })
-    # }
     class Meta:
         model = Project
         fields = [
             "is_accepted",
-
-            "title",
-            "orderer_user",
-            "about",
-            "deadline_datetime",
-            "purpose",
-            # "time",
-            # "date",
-
-            # "created_at",
-            # "updated_at",
-            "contractor_user",
-            "orderer_users",
             "contractor_users",
-            "reference_image1",
-            "reference_image2",
-            "reference_image3",
-            "reference_movie1",
-            "reference_movie2",
-            "reference_movie3",
-            "reference_music1",
-            "reference_music2",
-            "reference_music3",
-            "reference_url1",
-            "reference_url2",
-            "reference_url3",
         ]
 
-        # widgets = {
-        #     'deadline_datetime': forms.Textarea
-        # }
-
-
-        widgets = {
-            "deadline_datetime": forms.widgets.SplitDateTimeWidget
-            # "deadline_datetime": forms.widgets.SelectDateWidget
-        }
 
 
 

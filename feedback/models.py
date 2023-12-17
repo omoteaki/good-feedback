@@ -30,3 +30,18 @@ class Feedback(models.Model):
         verbose_name="投稿者",
         on_delete=models.CASCADE,
     )
+
+
+# class FeedBackRule(models.Model):
+
+    
+
+#     class Meta:
+#         verbose_name = _("FeedBackRule")
+#         verbose_name_plural = _("FeedBackRules")
+
+#     def __str__(self):
+#         return self.name
+
+#     def get_absolute_url(self):
+#         return reverse("FeedBackRule_detail", kwargs={"pk": self.pk})

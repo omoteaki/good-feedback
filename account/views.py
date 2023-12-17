@@ -46,14 +46,15 @@ class SignUpSuccessView(LoginView):
 
 
 class UserDetailCreate(CreateView):
+    # model
     form_class = UserDetailForm
     template_name = "create_feedback_rule.html"
     success_url = reverse_lazy("project:index")
 
-    # def form_valid(self, form):
-    #     detail = form.save(commit=False)
-    #     detail.user = self.request.user
-    #     detail.save()
-    #     user_detail1 = CustomUser.save(commit=False)
-    #     user_detail1.detail1 = UserDetail.objects.get()
-    #     return super().form_valid(form)
+    def form_valid(self, form):
+        detail = form.save(commit=False)
+        detail.user = self.request.user
+        detail.save()
+        # user_detail1 = CustomUser.save(commit=False)
+        # user_detail1.detail1 = UserDetail.objects.get()
+        return super().form_valid(form)

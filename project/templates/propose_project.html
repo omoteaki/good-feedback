@@ -8,6 +8,8 @@
 
 <div class="container">
 
+  <p>下記の内容で、お仕事の依頼が届いています。</p>
+  <p>内容を確認して、フィードバックルールの設定をしましょう！</p>
   <h3>お仕事依頼</h3>
 
   <h4>プロジェクト : {{project.title}}</h4>
@@ -28,10 +30,13 @@
   <a href="">参考資料を確認する</a>
 
   <form action="" method="post">
-    {% comment %} <p>以上の内容を確認されましたらチェックをつけてください。</p> {% endcomment %}
+    <p>以上の内容を確認されましたらチェックをつけてください。</p>
     {% csrf_token %}
 
-    {% comment %} {{form.is_accepted}} {% endcomment %}
+
+    <input type="checkbox" name="is_accepted" id="id_is_accepted">
+    {% comment %} {{form.is_accepted.label_tag}} {% endcomment %}
+    <label for="id_is_accepted">確認しました</label> 
 
     <p>{{request.user}}さんのサポーターを設定する場合は、下記ボックスにユーザー名を入力してください。</p>
 
@@ -42,13 +47,25 @@
 
 
   
-    <button type="submit" class="btn btn-primary">プロジェクトの内容の確認を完了し、フィードバックルールを設定画面に移る</button>
+    <button type="submit" class="btn btn-primary" id="submitButton" disabled>フィードバックルールを設定画面に移る</button>
   </form>
   
   
   </div>
   
 
-
+  <script>
+    // チェックボックスの状態が変わったら実行される関数
+    $('#id_is_accepted').change(function () {
+        // チェックボックスがチェックされているか確認
+        if (this.checked) {
+            // ボタンを有効化
+            $('#submitButton').prop('disabled', false);
+        } else {
+            // ボタンを無効化
+            $('#submitButton').prop('disabled', true);
+        }
+    });
+  </script>
 
 {% endblock %}
