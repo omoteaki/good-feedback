@@ -36,5 +36,15 @@ urlpatterns = [
         views.UserDetailCreate.as_view(),
         name="create_feedback_rule"
     ),
+    path(
+        "profile-edit/<int:pk>",
+        views.UserDetailUpdate.as_view(),
+        name="update_feedback_rule"
+    ),
+    path(
+        "mypage/<int:pk>",
+        views.CustomUserDetailView.as_view(),
+        name="mypage"
+    ),
     
 ]

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "project.apps.ProjectConfig",
     "feedback.apps.FeedbackConfig",
     "widget_tweaks",
+    # "smooth_timedelta",
 ]
 
 MIDDLEWARE = [

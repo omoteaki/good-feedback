@@ -22,10 +22,12 @@
   
   <h6>締切日時 : {{project.deadline_datetime}}</h6>
   
-  <h6>概要 : </h6>
+  {% if project.purpose %}
+  <h6>このプロジェクトの目標 : </h6>
   <div>
     {{project.purpose|linebreaks}}
   </div>
+  {% endif %}
 
   <a href="">参考資料を確認する</a>
 

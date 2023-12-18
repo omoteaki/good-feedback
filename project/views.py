@@ -1,20 +1,26 @@
 from typing import Any
 from django.shortcuts import render
 
-from datetime import date, time, datetime
-from backports.zoneinfo import ZoneInfo
+from datetime import date, time, datetime, timedelta
+from django.utils.timezone import make_aware
+# from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Max, Min, Avg
-from django.db.models import Q
+from django.db.models import Q, F
 
 from .models import Project, Task, ToDo
 from feedback.models import Feedback
 from account.models import UserDetail, CustomUser
 from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm, UpdateProjectForm, ProjectProposeForm
+
+
+# class MyPageView(DetailView):
+#     template_name =
 
 
 # ログインしていなかったらindex、ログインユーザーならマイページ
@@ -23,7 +29,7 @@ class IndexView(ListView):
 
     def get_queryset(self):
         if  self.request.user.is_authenticated:
-            request_user_projects = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).exclude(is_done=True)
+            request_user_projects = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).exclude(is_done=True).filter(is_accepted=True).annotate(delta=F("deadline_datetime") - make_aware(datetime.now())).order_by("deadline_datetime")
             return request_user_projects
         else:
             pass
@@ -34,6 +40,24 @@ class IndexView(ListView):
             print(context["details"])
             context["closed_project"] = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).filter(is_done=True)
             context["ordered_project_list"] = Project.objects.filter(contractor_user=self.request.user).filter(is_accepted=False)
+
+
+            for object in context["object_list"]:
+                print(type(object.delta))
+                txt = str(object.delta)
+                pos = txt.find(' days')
+                txt[:pos]
+                object.int_delta = int(txt[:pos])
+                print(type(object.int_delta), end=",")
+
+            for object in context["object_list"]:
+                print(object.id)
+
+            context["near_deadline_objects"] = context["object_list"].filter(delta__lte=timedelta(weeks=1))
+
+            for object in context["near_deadline_objects"]:
+                print(object)
+            # print(context["near_deadline_objects"])
             return context
         else:
             pass
@@ -346,5 +370,4 @@ class ToDoDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)
-
 

@@ -1,4 +1,4 @@
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, DetailView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 
@@ -51,6 +51,13 @@ class UserDetailCreate(CreateView):
     template_name = "create_feedback_rule.html"
     success_url = reverse_lazy("project:index")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["button_message"] = "登録する"
+        return context
+    
+
+
     def form_valid(self, form):
         detail = form.save(commit=False)
         detail.user = self.request.user
@@ -58,3 +65,37 @@ class UserDetailCreate(CreateView):
         # user_detail1 = CustomUser.save(commit=False)
         # user_detail1.detail1 = UserDetail.objects.get()
         return super().form_valid(form)
+    
+
+class UserDetailUpdate(UpdateView):
+    model = UserDetail
+    form_class = UserDetailForm
+    template_name = "create_feedback_rule.html"
+    success_url = reverse_lazy("project:index")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["button_message"] = "更新する"
+        return context
+
+    def form_valid(self, form):
+        detail = form.save(commit=False)
+        detail.user = self.request.user
+        detail.save()
+        # user_detail1 = CustomUser.save(commit=False)
+        # user_detail1.detail1 = UserDetail.objects.get()
+        return super().form_valid(form)
+    
+
+
+
+class CustomUserDetailView(DetailView):
+    model = CustomUser
+    template_name = "mypage.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["details"] = UserDetail.objects.filter(user=self.request.user)
+        print(context["details"])
+        return context
+    

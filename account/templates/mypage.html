@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block contents %}
+
+<div class="container">
+
+  <h4>{{request.user}}さんのページ</h4>
+
+  <p>現在の登録情報</p>
+
+  <p>{{object.email}}</p>
+
+
+  <h6>詳細情報</h6>
+  {% if details %}
+  
+  {% for detail in details %}
+  
+  <p>{{detail.label_select}} <a href="{% url "account:update_feedback_rule" detail.pk %}">編集する</a> </p>
+  <p>{{detail.profile}}</p>
+  <p>{{detail.rule}}</p>
+  
+  {% endfor %}
+
+  {% else %}
+  <p>詳細情報が登録されていません。</p>
+  <a href="{% url "account:create_feedback_rule" %}">登録はこちら</a>
+  
+  {% endif %}
+  
+
+
+
+</div>
+
+{% endblock %}

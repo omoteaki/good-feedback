@@ -30,6 +30,10 @@ class Feedback(models.Model):
         verbose_name="投稿者",
         on_delete=models.CASCADE,
     )
+    # is_read = models.BooleanField(
+    #     default=False,
+    #     help_text="既読はTrue"
+    # )
 
 
 # class FeedBackRule(models.Model):
