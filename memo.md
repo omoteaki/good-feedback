@@ -10,3 +10,19 @@
 | seiten | 晴天　大洋 | イラストレーター | seiten.nice.feedback@gmail.com
 
 
+
+
+## ナイスフィードバックのテーマカラー
+
+#f8f8f5
+#dec4b4
+#f2d347
+#e6b192
+#bc6156
+
+
+#f9fbfb
+#a3b6ca
+#f7d165
+#f17664
+#604f5f

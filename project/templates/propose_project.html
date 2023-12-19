@@ -1,73 +1,75 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 
-
-
 {% block contents %}
-
 
 <div class="container">
 
-  <p>下記の内容で、お仕事の依頼が届いています。</p>
-  <p>内容を確認して、フィードバックルールの設定をしましょう！</p>
-  <h3>お仕事依頼</h3>
-
-  <h4>プロジェクト : {{project.title}}</h4>
-
-  <h6>依頼者 : {{project.orderer_user}}さん</h6>
-  <h6>概要 : </h6>
-  <div>
-    {{project.about|linebreaks}}
+  <div class="d-flex border-bottom mb-2">
+    <h5 class="mb-1 ps-3">
+      お仕事依頼
+    </h5>
   </div>
-  
-  <h6>締切日時 : {{project.deadline_datetime}}</h6>
-  
-  {% if project.purpose %}
-  <h6>このプロジェクトの目標 : </h6>
-  <div>
-    {{project.purpose|linebreaks}}
+
+  <div class="ps-3">
+    <p>下記の内容で、お仕事の依頼が届いています。<br>
+      内容を確認して、フィードバックルールの設定をしましょう！
+    </p>
   </div>
-  {% endif %}
-
-  <a href="">参考資料を確認する</a>
-
-  <form action="" method="post">
-    <p>以上の内容を確認されましたらチェックをつけてください。</p>
-    {% csrf_token %}
 
 
-    <input type="checkbox" name="is_accepted" id="id_is_accepted">
-    {% comment %} {{form.is_accepted.label_tag}} {% endcomment %}
-    <label for="id_is_accepted">確認しました</label> 
-
-    <p>{{request.user}}さんのサポーターを設定する場合は、下記ボックスにユーザー名を入力してください。</p>
-
+  <div class="mb-3 border-bottom pb-3 ps-3 ">
+    <h5>プロジェクト : {{project.title}}</h5>
+  
+    <h6>依頼者 : {{project.orderer_user}}さん</h6>
+    <h6>概要 : </h6>
     <div>
-
-      {{form.contractor_users}}
+      {{project.about|linebreaks}}
     </div>
+    
+    <h6>締切日時 : {{project.deadline_datetime}}</h6>
+    
+    {% if project.purpose %}
+    <h6>このプロジェクトの目標 : </h6>
+    <div>
+      {{project.purpose|linebreaks}}
+    </div>
+    {% endif %}
+  
+    <a href="">参考資料を確認する</a>
+  </div>
 
+  <div class="ms-3">
+    <form action="" method="post">
+      <p>以上の内容を確認されましたらチェックをつけてください。</p>
+      {% csrf_token %}
+  
+      <label for="id_is_accepted" class="form-label">確認しました</label> 
+      <input type="checkbox" name="is_accepted" id="id_is_accepted" class="">
+  
+      <p>{{request.user}}さんのサポーターを設定する場合は、下記ボックスにユーザー名を入力してください。</p>
+      <div>
+        {{form.contractor_users}}
+      </div>
 
-  
-    <button type="submit" class="btn btn-primary" id="submitButton" disabled>フィードバックルールを設定画面に移る</button>
-  </form>
-  
-  
+      <button type="submit" class="btn btn-primary mt-3" id="submitButton" disabled>フィードバックルールを設定画面に移る</button>
+    </form>
   </div>
   
+</div>
 
-  <script>
-    // チェックボックスの状態が変わったら実行される関数
-    $('#id_is_accepted').change(function () {
-        // チェックボックスがチェックされているか確認
-        if (this.checked) {
-            // ボタンを有効化
-            $('#submitButton').prop('disabled', false);
-        } else {
-            // ボタンを無効化
-            $('#submitButton').prop('disabled', true);
-        }
-    });
-  </script>
+<script>
+  // チェックボックスの状態が変わったら実行される関数
+  $('#id_is_accepted').change(function () {
+      // チェックボックスがチェックされているか確認
+      if (this.checked) {
+          // ボタンを有効化
+          $('#submitButton').prop('disabled', false);
+      } else {
+          // ボタンを無効化
+          $('#submitButton').prop('disabled', true);
+      }
+  });
+</script>
 
 {% endblock %}

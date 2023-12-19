@@ -45,7 +45,7 @@ class IndexView(ListView):
             for object in context["object_list"]:
                 print(type(object.delta))
                 txt = str(object.delta)
-                pos = txt.find(' days')
+                pos = txt.find(' day')
                 txt[:pos]
                 object.int_delta = int(txt[:pos])
                 print(type(object.int_delta), end=",")
@@ -57,7 +57,6 @@ class IndexView(ListView):
 
             for object in context["near_deadline_objects"]:
                 print(object)
-            # print(context["near_deadline_objects"])
             return context
         else:
             pass
@@ -98,11 +97,15 @@ class SetFeedbackView(UpdateView):
         print(context["form"].fields["feedback_rule"].queryset)
         context["form"].fields["feedback_rule"].queryset = UserDetail.objects.filter(user=self.request.user)
         print(context["form"].fields["feedback_rule"].queryset)
+        if not 'propose_message' in self.request.session:
+            self.request.session['propose_message'] = "warning"
         return context
     
     def form_valid(self, form):
         detail_set = form.save(commit=False)
         detail_set.save()
+        if 'propose_message' in self.request.session:
+            self.request.session['propose_message'] = "success"
         return super().form_valid(form)
     
 
@@ -185,6 +188,10 @@ class ProjectDetailView(DetailView):
         context["todo_list"] = ToDo.objects.filter(project_id=self.kwargs["pk"])
         context["detail"] = UserDetail.objects.filter(user_id=self.object.contractor_user)
         print(context["detail"])
+        if 'propose_message' in self.request.session:
+            context["message"] = self.request.session['propose_message']
+            del self.request.session['propose_message']
+
         # print(context["project"].contractor_users.all)
         # for us in context["project"].contractor_users.all:
         #     print(us)
@@ -367,6 +374,7 @@ class ToDoDeleteView(DeleteView):
     model = ToDo
     template_name = "task_delete.html"
     success_url = reverse_lazy("project:index")
+
 
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)

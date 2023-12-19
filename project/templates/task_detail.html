@@ -5,7 +5,7 @@
 <div class="container">
 
   
-  <h2 class="border-bottom">タスク : {{object.title}}</h2>
+  <h5 class="border-bottom">タスク : {{object.title}}</h5>
   
   <p></p>
   <p>{{object.content}}</p>
@@ -27,7 +27,13 @@
   <a href="{% url "project:task_delete" object.pk %}">削除する</a>
   
   
+
+  {{object.project}}
+  {% if request.user == object.project.contractor_user %}
   <p><a href="{% url "project:add_todo" object.pk object.project_id %}">ToDoを追加する</a></p>
+  {% endif %}
+
+
   <p><a href="{% url "feedback:feedback_add" object.pk object.project_id %}">フィードバックを送る</a></p>
   
   

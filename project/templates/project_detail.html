@@ -4,212 +4,104 @@
 {% block contents %}
 
   {% if request.user != project.contractor_user and request.user != project.orderer_user %}
-
   <p>
     閲覧権がありません。<a href="{% url "project:index" %}">マイページへ戻る</a>
   </p>
-
   {% else %}
-
-
 
   <div class="container " id="featured-3">
 
-    <h3 class="pb-2 border-bottom">プロジェクト : {{project.title}}
-    {% if request.user == project.orderer_user %}
-      <span>
-        <a href="{% url "project:project_update" project.pk %}" class="fs-6">プロジェクトを編集する</a>
-      </span>
+  {% if message %}
+    {% if message == "success" %}
+    <div class="alert alert-success mb-2" role="alert">
+      プロジェクトが開始しました！
+    </div>
+    {% else %}
+    <div class="alert alert-warning mb-2" role="alert">
+      プロジェクトが開始しました！フィードバックルールが未設定です。早めに設定しましょう！
+    </div>
     {% endif %}
-    </h3>
-
-    <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">概要</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">参加者</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">参考資料</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" >フィードバックルール</button>
-      </li>
-    </ul>
+  {% endif %}
 
 
-    <div class="tab-content" id="myTabContent">
+  <h5 class="pb-1 border-bottom">プロジェクト : {{project.title}}
+  {% if request.user == project.orderer_user %}
+    <span>
+      <a href="{% url "project:project_update" project.pk %}" class="fs-6">プロジェクトを編集する</a>
+    </span>
+  {% endif %}
+  </h5>
 
-      <!-- 概要 -->
-      <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+  <!-- タブ -->
+  <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">概要</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">参加者</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">参考資料</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="disabled-tab" data-bs-toggle="tab" data-bs-target="#disabled-tab-pane" type="button" role="tab" aria-controls="disabled-tab-pane" aria-selected="false" >フィードバックルール</button>
+    </li>
+  </ul>
+
+
+  <div class="tab-content" id="myTabContent">
+
+    <!-- 概要 -->
+    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+      <div class="div">
         <p>発注内容 : <br>
           {{project.about|linebreaksbr}}
         </p>
-    
-        <p>発注者：{{project.orderer_user}}</p>
-        <p>受注者：{{project.contractor_user}}</p>
-    
-    
-        {% comment %} 
-        <div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
-          <div class="list-group">
-            <label class="list-group-item d-flex gap-3">
-              <input class="form-check-input flex-shrink-0" type="checkbox" value="" checked="" style="font-size: 1.375em;">
-              <span class="pt-1 form-checked-content">
-                <strong>Finish sales report</strong>
-                <small class="d-block text-body-secondary">
-                  <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#calendar-event"></use></svg>
-                  1:00–2:00pm
-                </small>
-              </span>
-            </label>
-            <label class="list-group-item d-flex gap-3">
-              <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;">
-              <span class="pt-1 form-checked-content">
-                <strong>Weekly All Hands</strong>
-                <small class="d-block text-body-secondary">
-                  <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#calendar-event"></use></svg>
-                  2:00–2:30pm
-                </small>
-              </span>
-            </label>
-            <label class="list-group-item d-flex gap-3">
-              <input class="form-check-input flex-shrink-0" type="checkbox" value="" style="font-size: 1.375em;">
-              <span class="pt-1 form-checked-content">
-                <strong>Out of office</strong>
-                <small class="d-block text-body-secondary">
-                  <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#alarm"></use></svg>
-                  Tomorrow
-                </small>
-              </span>
-            </label>
-            <label class="list-group-item d-flex gap-3 bg-body-tertiary">
-              <input class="form-check-input form-check-input-placeholder bg-body-tertiary flex-shrink-0 pe-none" disabled="" type="checkbox" value="" style="font-size: 1.375em;">
-              <span class="pt-1 form-checked-content">
-                <span contenteditable="true" class="w-100">Add new task...</span>
-                <small class="d-block text-body-secondary">
-                  <i class="bi bi-list-check"></i>
-    
-                  Choose list...
-                </small>
-              </span>
-            </label>
-          </div>
-        </div> {% endcomment %}
-    
-        <div class="list-group">
+        <p>目標 : <br>
+          {{project.purpose|linebreaksbr}}
+        </p>
+      </div>
+
+      {% comment %} {% if tasks %} {% endcomment %}
+      <div class="list-group mb-3">
         {% for task in tasks %}
-          <a href="{% url "project:task_detail" task.pk %}" class="list-group-item align-items-start">
-            <div class="ms-2 me-auto">
-              <div class="d-flex justify-content-between">
-                <div class="fw-bold">{{task}}</div>
-                <div>
-                  <span class="badge bg-primary rounded-pill">feedback:{{task.count}}</span>
-                </div>
-    
+        <a href="{% url "project:task_detail" task.pk %}" class="list-group-item align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="d-flex justify-content-between">
+              <div class="fw-bold">{{task}} <small class="">{{task.deadline_datetime}}</small> </div>
+              <div>
+                <span class="badge bg-primary rounded-pill">feedback:{{task.count}}</span>
               </div>
-              {{task.content}}
+  
             </div>
-          </a>
+            {{task.content}}
+          </div>
+        </a>
         {% endfor %}
         {% if request.user == project.orderer_user %}
-          <a href="{% url "project:add_task" project.pk %}" class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
-              <div class="fw-bold">＋タスクを追加する</div>
-            </div>
-          </a>
+        <a href="{% url "project:add_task" project.pk %}" class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">＋タスクを追加する</div>
+          </div>
+        </a>
         {% endif %}
-        </div>
-    
-        <button class="btn btn-primary mt-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">フィードバックを確認する</button>
-        <a class="btn btn-secondary mt-3" href="{% url "project:project_done" project.pk %}">プロジェクトを終了する</a>
-    
-        <!--フィードバック表示画面-->
-        
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-          <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasRightLabel">フィードバック</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-    
-          <div class="offcanvas-body">
-          {% for task in tasks %}
-    
-    
-          {% comment %} アコーディオン {% endcomment %}
-            {% comment %} <div class="accordion mb-3" id="accordion{{task.id}}">
-              <div class="accordion-item">
-                <h2 class="accordion-header">
-                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{task.id}}" aria-expanded="false" aria-controls="collapse{{task.id}}">
-                    タスク : {{task}}
-                  </button>
-                </h2>
-                <div id="collapse{{task.id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    {{task.content}}
-                    <a href="{% url "project:task_detail" task.pk %}">詳細...</a>
-                  </div>
-                </div>
-              </div>
-            </div> {% endcomment %}
-    
-    
-    
-            <div class="card text-bg-light mb-3 text-decoration-none" style="max-width: 100%;">
-              <a href="{% url "project:task_detail" task.pk %}" class="card-header">タスク : {{task}}</a>
-              {% comment %} <div class="card-body">
-                <p class="card-text">{{task.content}}</p>
-              </div> {% endcomment %}
-              <a href="{% url "feedback:feedback_add" task.pk project.pk %}" class="card-body d-flex text-decoration-none">
-                <p class="card-text mb-0">{{task.content}}</p>
-                <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
-              </a>
-            </div>
-              {% comment %} <li><a href="{% url "project:task_detail" task.pk %}">{{task}}</a></li> {% endcomment %}
-              {% comment %} <ul> {% endcomment %}
-              {% for feedback in feedbacks %}
-              {% if feedback.task.id == task.id %}
-                {% if feedback.self == null %}
-                <div class="card {% if request.user == feedback.user %}text-bg-primary ms-auto {% else %} text-bg-secondary {% endif %} mb-3 d-flex" style="max-width: 18rem;">
-                  {% comment %} <div class="card-header">{{task}}</div> {% endcomment %}
-                  <a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}" class="card-body d-flex text-decoration-none">
-                    <p class="card-text mb-0">{{feedback.comment}}</p>
-                    <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
-                  </a>
-                </div>
-    
-                {% comment %} <li>{{feedback.pk}}{{feedback.comment}}<a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}">返信する</a></li> {% endcomment %}
-    
-                {% else %}
-                {% comment %} <ul> {% endcomment %}
-                  <div class="card {% if request.user == feedback.user %}text-bg-primary ms-auto {% else %} text-bg-secondary {% endif %} mb-3" style="max-width: 18rem;">
-                    <div class="card-header">
-                      <small style="opacity: 0.9;">
-                        >{{feedback.self.comment}}
-                      </small>
-                    </div>
-                    <a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}" class="card-body d-flex text-decoration-none">
-                      <p class="card-text mb-0">{{feedback.comment}}</p>
-                      <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
-                    </a>
-                  </div>
-                  {% comment %} <li>{{feedback.self.id}}＜{{feedback.comment}}{{feedback.pk}}<a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}">返信する</a></li> {% endcomment %}
-                {% comment %} </ul> {% endcomment %}
-                {% endif %}
-              {% endif %}
-              {% endfor %}
-              </ul>
-              
-            {% endfor %}
-            </ul>
-          </div>
-        </div>
-    
-        {% if request.user == project.contractor_user %}
+      </div>
+      {% comment %} {% endif %} {% endcomment %}
+  
+      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">フィードバックを確認する</button>
+      {% if request.user == project.orderer_user %}
+
+      <a class="btn btn-secondary" href="{% url "project:project_done" project.pk %}">プロジェクトを終了する</a>
+      {% endif %}
+
+
+
+      {% if request.user == project.contractor_user %}
+      <div class="div">
         <p class="mt-3">このプロジェクトに関連するToDoリスト</p>
+        {% if todo_list %}
         <ul class="list-group">
-        {% for todo in todo_list %}
+          {% for todo in todo_list %}
           <li class="list-group-item d-flex">
             <input class="form-check-input me-1" type="checkbox" value="" id="todoNum{{todo.pk}}" {% if todo.is_done %}
             checked{% endif %}>
@@ -219,69 +111,73 @@
               <i class="bi bi-trash"></i>
             </a>
           </li>
-        {% endfor %}
+          {% endfor %}
         </ul>
-
+        {% else %}
+        <p>現在todoはありません。</p>
         {% endif %}
-
 
       </div>
+      {% endif %}
 
 
-
-
-      <!-- 参加者 -->
-      <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-
-        <p>発注者 : {{project.orderer_user}}さん{% if project.orderer_user == request.user %}(あなた){% endif %}</p>
-
-        {% if project.orderer_users.all %}
-        <p>発注者のサポート : 
-          {% for o_sp in project.orderer_users.all %}
-            {{o_sp}}さん
-          {% endfor %}
-        </p>
-        {% endif %}
-        <p>受注者 : {{project.contractor_user}}さん{% if project.contractor_user == request.user %}(あなた){% endif %}</p>
-        {% for de in detail %}
-        <p>{{de.profile}}</p>
-        {% endfor %}
-
-        {% if project.contractor_users.all %}
-        <p>受注者のサポート : 
-          {% for c_sp in project.contractor_users.all %}
-            {{c_sp}}さん
-          {% endfor %}
-        </p>
-        {% endif %}
-        
-
-      </div>
-
-
-
-
-
-      <!-- 参考資料 -->
-      <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
-        参考資料
-        {% if project.reference_image1 %}
-        <img src="{{project.reference_image1.url}}" alt="image1">
-        {% endif %}
-        {% if project.reference_music1 %}
-        <audio controls src="{{project.reference_music1.url}}">参考音源1</audio>
-        {% endif %}
-
-
-      </div>
-
-
-
-      <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
-        フィードバックルール
-        {{project.feedback_rule.rule}}
-      </div>
     </div>
+
+
+
+
+    <!-- 参加者 -->
+    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+
+      <p>発注者 : {{project.orderer_user}}さん{% if project.orderer_user == request.user %}(あなた){% endif %}</p>
+
+      {% if project.orderer_users.all %}
+      <p>発注者のサポート : 
+        {% for o_sp in project.orderer_users.all %}
+          {{o_sp}}さん
+        {% endfor %}
+      </p>
+      {% endif %}
+      <p>受注者 : {{project.contractor_user}}さん{% if project.contractor_user == request.user %}(あなた){% endif %}</p>
+      {% for de in detail %}
+      <p>{{de.profile}}</p>
+      {% endfor %}
+
+      {% if project.contractor_users.all %}
+      <p>受注者のサポート : 
+        {% for c_sp in project.contractor_users.all %}
+          {{c_sp}}さん
+        {% endfor %}
+      </p>
+      {% endif %}
+      
+
+    </div>
+
+
+
+
+
+    <!-- 参考資料 -->
+    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+      参考資料
+      {% if project.reference_image1 %}
+      <img src="{{project.reference_image1.url}}" alt="image1">
+      {% endif %}
+      {% if project.reference_music1 %}
+      <audio controls src="{{project.reference_music1.url}}">参考音源1</audio>
+      {% endif %}
+
+
+    </div>
+
+
+
+    <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
+      フィードバックルール
+      {{project.feedback_rule.rule}}
+    </div>
+  </div>
 
 
 
@@ -321,6 +217,96 @@
         </a>
       </div>
     </div> {% endcomment %}
+
+
+
+
+
+    
+      <!--フィードバック表示画面-->
+      
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasRightLabel">フィードバック</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+  
+        <div class="offcanvas-body">
+        {% for task in tasks %}
+  
+  
+        {% comment %} アコーディオン {% endcomment %}
+          {% comment %} <div class="accordion mb-3" id="accordion{{task.id}}">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{task.id}}" aria-expanded="false" aria-controls="collapse{{task.id}}">
+                  タスク : {{task}}
+                </button>
+              </h2>
+              <div id="collapse{{task.id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  {{task.content}}
+                  <a href="{% url "project:task_detail" task.pk %}">詳細...</a>
+                </div>
+              </div>
+            </div>
+          </div> {% endcomment %}
+  
+  
+  
+          <div class="card text-bg-light mb-3 text-decoration-none" style="max-width: 100%;">
+            <a href="{% url "project:task_detail" task.pk %}" class="card-header">タスク : {{task}}</a>
+            {% comment %} <div class="card-body">
+              <p class="card-text">{{task.content}}</p>
+            </div> {% endcomment %}
+            <a href="{% url "feedback:feedback_add" task.pk project.pk %}" class="card-body d-flex text-decoration-none">
+              <p class="card-text mb-0">{{task.content}}</p>
+              <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
+            </a>
+          </div>
+            {% comment %} <li><a href="{% url "project:task_detail" task.pk %}">{{task}}</a></li> {% endcomment %}
+            {% comment %} <ul> {% endcomment %}
+            {% for feedback in feedbacks %}
+            {% if feedback.task.id == task.id %}
+              {% if feedback.self == null %}
+              <div class="card {% if request.user == feedback.user %}text-bg-primary ms-auto {% else %} text-bg-secondary {% endif %} mb-3 d-flex" style="max-width: 18rem;">
+                {% comment %} <div class="card-header">{{task}}</div> {% endcomment %}
+                <a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}" class="card-body d-flex text-decoration-none">
+                  <p class="card-text mb-0">{{feedback.comment}}</p>
+                  <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
+                </a>
+              </div>
+  
+              {% comment %} <li>{{feedback.pk}}{{feedback.comment}}<a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}">返信する</a></li> {% endcomment %}
+  
+              {% else %}
+              {% comment %} <ul> {% endcomment %}
+                <div class="card {% if request.user == feedback.user %}text-bg-primary ms-auto {% else %} text-bg-secondary {% endif %} mb-3" style="max-width: 18rem;">
+                  <div class="card-header">
+                    <small style="opacity: 0.9;">
+                      >{{feedback.self.comment}}
+                    </small>
+                  </div>
+                  <a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}" class="card-body d-flex text-decoration-none">
+                    <p class="card-text mb-0">{{feedback.comment}}</p>
+                    <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
+                  </a>
+                </div>
+                {% comment %} <li>{{feedback.self.id}}＜{{feedback.comment}}{{feedback.pk}}<a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}">返信する</a></li> {% endcomment %}
+              {% comment %} </ul> {% endcomment %}
+              {% endif %}
+            {% endif %}
+            {% endfor %}
+            </ul>
+            
+          {% endfor %}
+          </ul>
+        </div>
+      </div>
+  <!-- フィードバックの表示ここまで -->
+
+
+
 
   <!-- .containerの閉じdiv -->
   </div>

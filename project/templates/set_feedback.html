@@ -1,35 +1,47 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 
 {% block contents %}
 
 <div class="container">
 
-  <p>まだプロジェクトは開始していません</p>
-  <h4>フィードバックルールを設定して、プロジェクトを開始しましょう</h4>
+  <div class="d-flex border-bottom mb-2">
+    <h5 class="mb-1 ps-3">
+      フィードバックルールの設定
+    </h5>
+  </div>
+
+  <div class="ps-3">
+    <p>まだプロジェクトは開始していません。<br>
+      フィードバックルールを設定して、プロジェクトを始めましょう！
+    </p>
+  </div>
+
+
+  <div class="ps-3">
 
   {% if user_detail_list %}
+    <form action="" method="post">
+      {% csrf_token %}
 
-  <form action="" method="post">
+      <label for="id_feedback_rule" class="form-label">フィードバック</label>
+      {% render_field form.feedback_rule class="form-control" %}
 
-    {% csrf_token %}
-    {{form}}
-    <button type="submit">フィードバックを設定して、プロジェクトを開始する</button>
+      <button type="submit" class="btn btn-primary mt-3">プロジェクトを開始</button>
+    </form>
 
-  </form>
-
-
-
-
-<div id="selectedContent">
-{% comment %} <div class="testclass"></div>
-<div class="testclass"></div> {% endcomment %}
-  <!-- 選択された内容が表示される部分 -->
-</div>
-{% else %}
-<p>{{request.user}}さんはまだフィードバックルールのテンプレートが設定されていません。サンプルを参考にフィードバックルールを設定してください。<small>(一度テンプレートを保存すると他のプロジェクトでも使うことができます)</small></p>
-
-<a href="{% url "account:create_feedback_rule" %}">フィードバックルールを設定する</a>
-{% endif %}
+    <div id="selectedContent">
+    {% comment %} <div class="testclass"></div>
+    <div class="testclass"></div> {% endcomment %}
+      <!-- 選択された内容が表示される部分 -->
+    </div>
+  {% else %}
+    <p>{{request.user}}さんはまだフィードバックルールのテンプレートが設定されていません。サンプルを参考にフィードバックルールを設定してください。<small>(一度テンプレートを保存すると他のプロジェクトでも使うことができます)</small></p>
+  
+    <a href="{% url "account:create_feedback_rule" %}">フィードバックルールを設定する</a>
+    <a href="{% url "project:project_detail" object.pk %}">設定をスキップしてプロジェクトを開始する</a>
+  {% endif %}
+  </div>
 
 
 </div>

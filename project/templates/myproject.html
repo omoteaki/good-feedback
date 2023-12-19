@@ -1,23 +1,20 @@
-{% comment %} {% load smooth_timedelta %} {% endcomment %}
 
 
 
-<div class="container my-6">
 
-  <div class="d-flex">
-    <h5 class="">
+
+<div class="container">
+
+  <div class="d-flex border-bottom mb-2">
+    <h5 class="mb-1">
       {{request.user}}さんの管理ページ
     </h5>
-  
     <a href="{% url "account:mypage" request.user.pk %}" class="ms-3">プロフィールの確認・編集</a>
-
   </div>
 
   {% comment %} <div class="alert alert-info mb-2" role="alert">
     新着フィードバックが件あります。<a href="" class="alert-link">確認する</a>
   </div> {% endcomment %}
-
-
 
   {% if ordered_project_list %}
   <div class="">
@@ -44,35 +41,25 @@
       納期が近いプロジェクト
     </div>
 
-
     <div class="row">
     {% for n_o in near_deadline_objects %}
-    
       <div class="col-sm-6 mb-3 mb-sm-3">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title">{{n_o.title}}</h5>
+        <a href="{% url "project:project_detail" n_o.pk %}" class="card h-100 text-decoration-none">
+          <div  class="card-body py-2 ">
             {% if n_o.orderer_user == request.user %}
-            
-            <p class="card-text">受注者{{n_o.contractor_user}}</p>
+            <small class="text-body-secondary">{{n_o.contractor_user}}さんに発注中</small>
             {% else %}
-            <p class="card-text">発注者{{n_o.orderer_user}}</p>
-
+            <small class="text-body-secondary">{{n_o.orderer_user}}さんから受注中</small>
+            
             {% endif %}
-            <a href="{% url "project:project_detail" n_o.pk %}" class="btn btn-primary">詳細を確認する</a>
+            
+            <h6 class="card-title mb-1">{{n_o.title}}</h6>
+            <small class="text-body-secondary">{{n_o.deadline_datetime}}</small>
           </div>
-        </div>
+        </a>
       </div>
     {% endfor %}
-      {% comment %} <div class="col-sm-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Special title treatment</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div> {% endcomment %}
+
     </div>
 
   </div>
@@ -83,9 +70,8 @@
 
   <!-- 現在進行中のプロジェクト -->
 
-    
   {% if object_list %}
-  <div class="card">
+  <div class="card mb-4">
     <div class="card-header">現在進行中のプロジェクト</div>
 
     <div class="list-group list-group-flush">
@@ -106,17 +92,28 @@
   {% endif %}
 
 
+  <!-- 終了したプロジェクト -->
+
   {% if closed_project %}
-  <div class="">
-    <p>終了したプロジェクト</p>
-    {% for c_p in closed_project %}
-    <p>
-      {{c_p}}
-    </p>
-    {% endfor %}
+  <div class="card mb-4">
+    <div class="card-header">終了したプロジェクト</div>
+
+    <div class="list-group list-group-flush">
+      {% for record in closed_project %}
+      <a href="{% url "project:project_detail" record.pk %}" class="list-group-item list-group-item-action d-flex">
+        <div>
+          {{record}}
+        </div>
+        <small class="ms-auto text-body-secondary">{{record.deadline_datetime}}</small>
+        </a>
+      
+      {% endfor %}
+    </div>
     
   </div>
   {% endif %}
+
+
 
 
   <div class="row">
@@ -125,6 +122,7 @@
       
     </div>
 
+  </div>
 
 {% comment %}     
     <div class="col-sm">
@@ -160,8 +158,7 @@
   </div>
 
 
- {% endcomment %}
+{% endcomment %}
 
-</div>
 
 
