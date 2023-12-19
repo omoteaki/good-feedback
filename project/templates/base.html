@@ -14,10 +14,13 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <link rel="stylesheet" href="{% static "css/custom.css" %}">
+  <link rel="stylesheet" href="{% static "css/style.css" %}">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg ps-3 shadow-sm mb-3">
-    <div class="container-fluid">
+  <div class="background"></div>
+  
+  <nav class="navbar navbar-expand-lg bg-light shadow-sm mb-3">
+    <div class="container">
       <a class="navbar-brand" href="{% url "project:index" %}">
         <i class="bi bi-hand-thumbs-up"></i>ナイスフィードバック
       </a>
@@ -25,7 +28,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 pe-5">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           {% if user.is_authenticated %}
 
           <li class="nav-item">
@@ -64,13 +67,13 @@
 
   {% comment %} <div class="container"> {% endcomment %}
 
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-      <div class="col-md-4 d-flex align-items-center">
-        <span class="mb-3 mb-md-0 text-body-secondary">© 2023 omoteaki, Nice Feedback</span>
-      </div>
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 pb-4 mt-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+      <span class="mb-3 mb-md-0 text-body-secondary">© 2023 omoteaki, Nice Feedback</span>
+    </div>
 
 
-    </footer>
+  </footer>
   {% comment %} </div> {% endcomment %}
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>

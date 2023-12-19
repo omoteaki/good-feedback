@@ -1,9 +1,9 @@
-* {
+/* * {
   margin: 0;
   padding: 0;
-}
+} */
 
-:root {
+/* :root {
   --main-bg-color: #0f0e17;
   --main-hl-color: #fffffe;
   --sub-headline: #2e2f3e;
@@ -12,28 +12,37 @@
   --secondary: #f25f4c;
   --tertiary: #e53170;
   --stroke: black;
-}
+} */
 
 
-html {
+.background {
   /* background-color: aliceblue; */
-  /* background-color: #f7f3e6;
-  opacity: 0.8;
+  background-color: #f7f3e6;
+  opacity: 0.5;
   background: radial-gradient(circle, transparent 20%, #f7f3e6 20%, #f7f3e6 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #f7f3e6 20%, #f7f3e6 80%, transparent 80%, transparent) 27.5px 27.5px, linear-gradient(#f7b445 2.2px, transparent 2.2px) 0 -1.1px, linear-gradient(90deg, #f7b445 2.2px, #f7f3e6 2.2px) -1.1px 0;
-  background-size: 55px 55px, 55px 55px, 27.5px 27.5px, 27.5px 27.5px; */
+  background-size: 55px 55px, 55px 55px, 27.5px 27.5px, 27.5px 27.5px;
   /* position: absolute;
   width: 100vw;
   height: 1000%;
   z-index: -10; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
 }
 
 body {
-  opacity: 1;
+  position: relative;
 }
+/* .container {
+  opacity: 1;
+} */
 
 header {
-  height: 56px;
-  color: #2e2f3e;
+  /* height: 56px;
+  color: #2e2f3e; */
 }
 
 header > h1 {
