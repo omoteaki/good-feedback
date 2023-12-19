@@ -78,3 +78,7 @@ class UserDetail(models.Model):
         max_length=50,
         choices=LABEL
     )
+
+    def __str__(self):
+        detail_label_name = str(self.user) + str(self.label_select)
+        return detail_label_name
