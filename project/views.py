@@ -3,8 +3,8 @@ from django.shortcuts import render
 
 from datetime import date, time, datetime, timedelta
 from django.utils.timezone import make_aware
-# from backports.zoneinfo import ZoneInfo
-from zoneinfo import ZoneInfo
+from backports.zoneinfo import ZoneInfo
+# from zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -45,7 +45,7 @@ class IndexView(ListView):
             for object in context["object_list"]:
                 print(type(object.delta))
                 txt = str(object.delta)
-                pos = txt.find(' days')
+                pos = txt.find(' day')
                 txt[:pos]
                 object.int_delta = int(txt[:pos])
                 print(type(object.int_delta), end=",")
