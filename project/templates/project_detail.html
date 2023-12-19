@@ -57,6 +57,7 @@
         <p>発注内容 : <br>
           {{project.about|linebreaksbr}}
         </p>
+          {{project.markdown_to_html|safe}}
         <p>目標 : <br>
           {{project.purpose|linebreaksbr}}
         </p>
@@ -318,4 +319,8 @@
 
   {% endif %}
 
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.db import models
+import markdown
 
 from account.models import CustomUser, UserDetail
 
@@ -142,6 +143,14 @@ class Project(models.Model):
         blank=True,
         null=True,
     )
+
+    def markdown_to_html(self):
+        """Markdown を HTML に変換して出力
+        さらに拡張機能を使用して目次を自動生成する"""
+        md = markdown.Markdown(
+            extensions=['extra', 'admonition', 'sane_lists', 'toc'])
+        html = md.convert(self.about)
+        return html
 
     def __str__(self):
         return self.title
