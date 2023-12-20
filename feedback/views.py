@@ -43,3 +43,7 @@ class FeedbackReplyView(CreateView):
         feedback.save()
         return super().form_valid(form)
     
+
+
+class HelpView(TemplateView):
+    template_name = "help.html"
