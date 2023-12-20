@@ -81,7 +81,7 @@
           {{record}}
         </div>
         <small class="ms-auto text-body-secondary">{{record.deadline_datetime}}</small>
-        <span class="ms-3 badge {% if record.int_delta < 4 %}text-bg-danger {% elif record.int_delta < 8 %} text-bg-warning {% else %} text-bg-primary {% endif %}">あと{{record.int_delta}}日</span></a>
+        <span class="ms-3 badge {% if record.int_delta < 4 %}text-bg-danger {% elif record.int_delta < 8 %} text-bg-warning {% else %} text-bg-success {% endif %}">あと{{record.int_delta}}日</span></a>
       
       {% endfor %}
     </div>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block contents %}
+
+
+<audio id="audioPlayer" controls>
+  <source src="/media/references/tsukino_sita_de.mp3" type="audio/mp3">
+  Your browser does not support the audio tag.
+</audio>
+<div id="textDisplay"></div>
+<ul id="textList">
+  <li data-position="9.6">A</li>
+  <li data-position="28.8">B</li>
+  <!-- 他のマーカーを追加 -->
+</ul>
+
+
+<script>
+
+
+
+
+</script>
+<script src="{% static "js/audio.js" %}"></script>
+
+{% endblock %}

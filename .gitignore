@@ -1,4 +1,3 @@
 media/
-static/js
 static/node_modules
-midi.py
+test.midi
