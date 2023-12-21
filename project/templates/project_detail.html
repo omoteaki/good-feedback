@@ -295,9 +295,9 @@
                     <p class="card-text mb-0">{{feedback.comment}}</p>
                     {% if feedback.midi %}
                     <a class="text-white" href="{% url "feedback:help" feedback.pk %}">試聴ページに行く</a>
-                    {% for marker in feedback.marker_of_midi %}
-                    {{ marker }}
-                    {% endfor %}
+                    {% comment %} {% for marker in feedback.marker_of_midi %} {% endcomment %}
+                    {% comment %} {{ marker }} {% endcomment %}
+                    {% comment %} {% endfor %} {% endcomment %}
                     {% endif %}
                     <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
                   </a>
