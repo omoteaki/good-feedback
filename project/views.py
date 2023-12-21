@@ -184,10 +184,18 @@ class ProjectDetailView(DetailView):
         # context["feedbacks"] = Feedback.objects.all()
         # 本当は、projectに紐づいている、taskに紐づいているfeedbackだけ取り出したい
         context["feedbacks"] = Feedback.objects.filter(task_id__in=context["tasks"])
+        # for f in context["feedbacks"]:
+        list = context["feedbacks"][1].marker_of_midi
+        # print(list)
+        # for li in list:
+        #     print(li)
+
+        # for li in list:
+        #     print(li)
 
         context["todo_list"] = ToDo.objects.filter(project_id=self.kwargs["pk"])
         context["detail"] = UserDetail.objects.filter(user_id=self.object.contractor_user)
-        print(context["detail"])
+        # print(context["detail"])
         if 'propose_message' in self.request.session:
             context["message"] = self.request.session['propose_message']
             del self.request.session['propose_message']

@@ -167,6 +167,7 @@
       {% endif %}
       {% if project.reference_music1 %}
       <audio controls src="{{project.reference_music1.url}}">参考音源1</audio>
+      {% comment %} {{project.reference_music1.path}} {% endcomment %}
       {% endif %}
 
 
@@ -267,6 +268,7 @@
           </div>
             {% comment %} <li><a href="{% url "project:task_detail" task.pk %}">{{task}}</a></li> {% endcomment %}
             {% comment %} <ul> {% endcomment %}
+            
             {% for feedback in feedbacks %}
             {% if feedback.task.id == task.id %}
               {% if feedback.self == null %}
@@ -274,6 +276,7 @@
                 {% comment %} <div class="card-header">{{task}}</div> {% endcomment %}
                 <a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}" class="card-body d-flex text-decoration-none">
                   <p class="card-text mb-0">{{feedback.comment}}</p>
+
                   <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
                 </a>
               </div>
@@ -290,6 +293,12 @@
                   </div>
                   <a href="{% url "feedback:reply" task.pk project.pk feedback.pk %}" class="card-body d-flex text-decoration-none">
                     <p class="card-text mb-0">{{feedback.comment}}</p>
+                    {% if feedback.midi %}
+                    <a class="text-white" href="{% url "feedback:help" feedback.pk %}">試聴ページに行く</a>
+                    {% for marker in feedback.marker_of_midi %}
+                    {{ marker }}
+                    {% endfor %}
+                    {% endif %}
                     <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
                   </a>
                 </div>
