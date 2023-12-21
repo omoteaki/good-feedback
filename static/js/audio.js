@@ -119,47 +119,37 @@
 
 
 
+// var markerList = {{ object.marker_of_midi|safe }};
+// var markerList = document.getElementById('marker-list').getAttribute('data-marker-list');
 
 
 
 const audio = document.getElementById("audioPlayer");
 
+// const list_moto = document.getElementById('my-element').getAttribute('data-marker-data');
 
-const list = [
-  {'time': 1.92, 'marker': 'intro'},
-  {'time': 9.6, 'marker': 'A'},
-  {'time': 28.8, 'marker': 'B'},
-  {'time': 44.16, 'marker': "B'"},
-  {'time': 59.52, 'marker': 'C'},
-  {'time': 74.88, 'marker': 'D'},
-  {'time': 90.24, 'marker': "D'"},
-  {'time': 105.6, 'marker': 'inter'},
-  {'time': 120.96, 'marker': '2A'},
-  {'time': 140.16, 'marker': '2B'},
-  {'time': 155.52, 'marker': "2B'"},
-  {'time': 170.88, 'marker': '2C'},
-  {'time': 186.24, 'marker': '2D'},
-  {'time': 201.6, 'marker': "2D'"},
-  // {'time': 218.88, 'marker': 'inter2'},
-  // {'time': 224.64, 'marker': 'E'},
-  // {'time': 240.0, 'marker': "E'"},
-  // {'time': 263.04, 'marker': '3inter'},
-  // {'time': 293.76, 'marker': '4C'},
-  // {'time': 311.04, 'marker': '4D'},
-  // {'time': 324.48, 'marker': "4D'"},
-  // {'time': 339.84, 'marker': '4D"'},
-  // {'time': 357.12, 'marker': '4D"\''},
-]
+var list = markerList
 
+var outputDiv = document.getElementById('output');
 
+for (var i = 0; i < markerList.length; i++) {
+  var time = markerList[i].time;
+  var marker = markerList[i].marker;
+
+  var paragraph = document.createElement('p');
+  paragraph.textContent = time;
+  outputDiv.appendChild(paragraph);
+}
+
+console.log(list);
 
 function updateTextDisplay(currentTime) {
   const textDisplay = document.getElementById("textDisplay");
   
   // リストをイテレート
   for (let i = 0; i < list.length; i++) {
-    const markerTime = list[i].time;
-    const nextMarkerTime = i < list.length - 1 ? list[i + 1].time : Infinity;
+    const markerTime = list[i].time - 3.176;
+    const nextMarkerTime = i < list.length - 1 ? list[i + 1].time - 3.176: Infinity;
 
     if (currentTime >= markerTime && currentTime < nextMarkerTime) {
       // currentTimeが現在のマーカーと次のマーカーの間にある場合
@@ -201,7 +191,9 @@ const textList = document.getElementById("textList");
 
 textList.addEventListener("click", function(event) {
   if (event.target.tagName === "LI") {
-    const position = event.target.dataset.position;
+    var position = event.target.dataset.position;
+    console.log(position - 5);
+    position = position - 3.176;
     playFromPosition(position);
   }
 });
