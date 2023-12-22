@@ -3,8 +3,8 @@ from django.shortcuts import render
 
 from datetime import date, time, datetime, timedelta
 from django.utils.timezone import make_aware
-# from backports.zoneinfo import ZoneInfo
-from zoneinfo import ZoneInfo
+from backports.zoneinfo import ZoneInfo
+# from zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -37,7 +37,7 @@ class IndexView(ListView):
         if  self.request.user.is_authenticated:
             context = super().get_context_data(**kwargs)
             context["details"] = UserDetail.objects.filter(user=self.request.user)
-            print(context["details"])
+            # print(context["details"])
             context["closed_project"] = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).filter(is_done=True)
             context["ordered_project_list"] = Project.objects.filter(contractor_user=self.request.user).filter(is_accepted=False)
 
@@ -46,17 +46,22 @@ class IndexView(ListView):
                 print(type(object.delta))
                 txt = str(object.delta)
                 pos = txt.find(' day')
-                txt[:pos]
-                object.int_delta = int(txt[:pos])
-                print(type(object.int_delta), end=",")
+                # print(pos)
+                if pos >= 1:
+                    object.int_delta = int(txt[:pos])
+                else:
+                    object.int_delta = 0
 
-            for object in context["object_list"]:
-                print(object.id)
+                # txt[:pos]
+                # print(type(object.int_delta), end=",")
+
+            # for object in context["object_list"]:
+            #     print(object.id)
 
             context["near_deadline_objects"] = context["object_list"].filter(delta__lte=timedelta(weeks=1))
 
-            for object in context["near_deadline_objects"]:
-                print(object)
+            # for object in context["near_deadline_objects"]:
+            #     print(object)
             return context
         else:
             pass

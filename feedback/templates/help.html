@@ -5,139 +5,84 @@
 
 <div class="container">
 
-  {% comment %} <div id="my-element" data-marker-data="{{ object.marker_of_midi }}"> {% endcomment %}
-    {% comment %} {{ object.marker_of_midi }} {% endcomment %}
-    <!-- JavaScript内でデータを取得 -->
   <audio id="audioPlayer" controls>
-    {% comment %} <source src="/media/references/tsukino_sita_de.mp3" type="audio/mp3"> {% endcomment %}
     <source src="{{object.file.url}}" type="audio/mp3">
     Your browser does not support the audio tag.
   </audio>
-  <div id="textDisplay"></div>
+
+  <div id="markerDisplay">
+    まだマーカーはありません
+  </div>
   <ul id="textList">
-    {% comment %} {% for marker in object.marker_of_midi %} {% endcomment %}
-    {% comment %} <li data-position="{{marker.time}}">{{marker.marker}}</li> {% endcomment %}
-    {% comment %} {% endfor %} {% endcomment %}
-    <li data-position="28.8">B</li>
-    <!-- 他のマーカーを追加 -->
   </ul>
 </div>
 
-{% comment %} <div id="marker-list" data-marker-list="{{ object.marker_of_midi|safe }}">
-</div> {% endcomment %}
-<div id="textList"></div>
-
-
-</div>
-
-
-
 
 <script>
-  var markerList = {{ object.marker_of_midi|safe }};
-  console.log(markerList);
-  var outputDiv = document.getElementById('output');
 
+  // マーカーリスト(JSON)を受け取る
+  var markerList = {{ object.marker_of_midi|safe }};
+  
   // JSONデータの内容を表示する
+  var textList = document.getElementById('textList');
   for (var i = 0; i < markerList.length; i++) {
     var time = markerList[i].time;
     var marker = markerList[i].marker;
 
-    var paragraph = document.createElement('li');
-    paragraph.textContent = marker;
-    outputDiv.appendChild(paragraph);
-  } 
-
-
+    var innerList = document.createElement('li');
+    innerList.textContent = marker;
+    innerList.setAttribute('data-position', time)
+    textList.appendChild(innerList);
+  }
 
 
   const audio = document.getElementById("audioPlayer");
 
-  // const list_moto = document.getElementById('my-element').getAttribute('data-marker-data');
-  
-  var list = markerList
-  
-  var outputDiv = document.getElementById('output');
-  
-  for (var i = 0; i < markerList.length; i++) {
-    var time = markerList[i].time;
-    var marker = markerList[i].marker;
-  
-    var paragraph = document.createElement('p');
-    paragraph.textContent = time;
-    outputDiv.appendChild(paragraph);
-  }
-  
-  console.log(list);
-  
+  // 再生位置によって対応するマーカーを表示
   function updateTextDisplay(currentTime) {
-    const textDisplay = document.getElementById("textDisplay");
+    const markerDisplay = document.getElementById("markerDisplay");
     
     // リストをイテレート
-    for (let i = 0; i < list.length; i++) {
-      const markerTime = list[i].time - 3.176;
-      const nextMarkerTime = i < list.length - 1 ? list[i + 1].time - 3.176: Infinity;
+    for (let i = 0; i < markerList.length; i++) {
+      const markerTime = markerList[i].time - 3.176;
+      const nextMarkerTime = i < markerList.length - 1 ? markerList[i + 1].time - 3.176: Infinity;
   
       if (currentTime >= markerTime && currentTime < nextMarkerTime) {
         // currentTimeが現在のマーカーと次のマーカーの間にある場合
-        console.log(list[i].marker);
-        textDisplay.innerHTML = list[i].marker;
+        console.log(markerList[i].marker);
+        markerDisplay.innerHTML = markerList[i].marker;
         return; // マッチしたら終了
       }
     }
   
     // マーカーがない場合
-    console.log("まだマーカーはありません");
-    textDisplay.innerHTML = "まだマーカーはありません";
+    markerDisplay.innerHTML = "まだマーカーはありません";
   }
-  
+
+  // 再生時間が更新するたびに確認
   audio.addEventListener("timeupdate", function() {
     const currentTime = audio.currentTime;
     updateTextDisplay(currentTime);
   });
-  
-  
-  
-  // console.log(textSelect)
-  
-  function playFromPosition(position) {
-    audio.currentTime = position;
+
+
+  function playFromPosition(position, offset = 0) {
+    audio.currentTime = position - offset;
     // audio.play();
   }
-  
-  // // テキストがクリックされたときに対応する位置から再生
-  // const textSelect = document.getElementById("textSelect");
-  
-  // textSelect.addEventListener("click", function() {
-  //   console.log(textSelect.value)
-  //   const position = textSelect.value;
-  //   playFromPosition(position);
-  // });
-  
-  const textList = document.getElementById("textList");
-  
+
+  // テキストがクリックされたときに対応する位置から再生
   textList.addEventListener("click", function(event) {
     if (event.target.tagName === "LI") {
       var position = event.target.dataset.position;
-      console.log(position - 5);
-      position = position - 3.176;
-      playFromPosition(position);
+      // position = position - 3.176;
+      var offset = 3.176
+      playFromPosition(position,offset);
     }
   });
   
 
-
-
 </script>
-
-<script>
-
-
-
-</script>
-
-
-
 
 {% comment %} <script src="{% static "js/audio.js" %}"></script> {% endcomment %}
 
