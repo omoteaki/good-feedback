@@ -3,17 +3,27 @@
 {% block contents %}
 
 
+<div class="container">
 
+  <div class="card py-2 px-3 bg-light">
 
-<h3>タスク一覧</h3>
+    <a href="{% url "project:project_detail" project.pk %}">プロジェクト：{{project}}</a>
+    {{object_list.project}}
+    <h5>タスク一覧</h5>
 
-{% for record in object_list %}
+    <ul>
+      {% for record in object_list %}
+      <li>
+        <a href="{% url "project:task_detail" record.pk %}">
+          {{record}}
+        </a>
 
-<a href="{% url "project:task_detail" record.pk %}">
-  
-  {{record}}
-</a>
-<br>
+      </li>
+      {% endfor %}
+    </ul>
 
-{% endfor %}
+  </div>
+
+</div>
+
 {% endblock %}

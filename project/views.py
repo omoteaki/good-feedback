@@ -3,8 +3,8 @@ from django.shortcuts import render
 
 from datetime import date, time, datetime, timedelta
 from django.utils.timezone import make_aware
-from backports.zoneinfo import ZoneInfo
-# from zoneinfo import ZoneInfo
+# from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -306,6 +306,12 @@ class TaskListView(ListView):
         Tasks = Task.objects.filter(project_id=self.kwargs["pk"])
         return Tasks
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["project"] = Project.objects.get(id=self.kwargs["pk"])
+        return context
+    
+
 
 class TaskDetailView(DetailView):
     template_name = "task_detail.html"
@@ -326,16 +332,19 @@ class TaskEditView(UpdateView):
         "title",
         "content",
         "deadline_datetime",
-        #更新日必要じゃない？？
     ]
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["button_message"] = "タスクを更新"
+        return context
+    
     def get_success_url(self):
         return reverse_lazy("project:task_detail", kwargs={"pk": self.object.pk})
 
     def form_valid(self, form):
         new_task = form.save(commit=False)
         new_task.save()
-        # self.object = new_task
         return super().form_valid(form)
     
 class TaskDeleteView(DeleteView):

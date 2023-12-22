@@ -44,3 +44,24 @@
           </label>
         </div>
       </div>
+
+
+
+
+      
+  {% comment %} アコーディオン {% endcomment %}
+  {% comment %} <div class="accordion mb-3" id="accordion{{task.id}}">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{task.id}}" aria-expanded="false" aria-controls="collapse{{task.id}}">
+          タスク : {{task}}
+        </button>
+      </h2>
+      <div id="collapse{{task.id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+          {{task.content}}
+          <a href="{% url "project:task_detail" task.pk %}">詳細...</a>
+        </div>
+      </div>
+    </div>
+  </div> {% endcomment %}

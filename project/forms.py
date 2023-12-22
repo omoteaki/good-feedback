@@ -122,7 +122,10 @@ class ProjectProposeForm(forms.ModelForm):
 class AddTaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ('project',)
+        exclude = (
+            'project',
+            "updated_at",
+        )
 
 class ToDoCreateForm(forms.ModelForm):
     class Meta:
