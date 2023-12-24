@@ -23,6 +23,9 @@ $card-box-shadow: $box-shadow-sm;
 // $border-style:                none;
 
 
-
+$input-disabled-bg:$primary;
+$input-disabled-border-color:       $primary;
+$form-select-disabled-bg:           $primary;
 
 @import "../node_modules/bootstrap/scss/bootstrap";
+

@@ -32,7 +32,17 @@ urlpatterns = [
         name="logout"
     ),
     path(
+        "user-data/<int:pk>",
+        views.UserUpdate.as_view(),
+        name="user_update"
+    ),
+    path(
         "profile/",
+        views.UserDetailCreate.as_view(),
+        name="create_feedback_rule"
+    ),
+    path(
+        "profile/<int:detail_num>",
         views.UserDetailCreate.as_view(),
         name="create_feedback_rule"
     ),

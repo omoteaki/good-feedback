@@ -3,8 +3,8 @@ from django.shortcuts import render
 
 from datetime import date, time, datetime, timedelta
 from django.utils.timezone import make_aware
-# from backports.zoneinfo import ZoneInfo
-from zoneinfo import ZoneInfo
+from backports.zoneinfo import ZoneInfo
+# from zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -37,6 +37,7 @@ class IndexView(ListView):
         if  self.request.user.is_authenticated:
             context = super().get_context_data(**kwargs)
             context["details"] = UserDetail.objects.filter(user=self.request.user)
+            context["myproject"] = True
             # print(context["details"])
             context["closed_project"] = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).filter(is_done=True)
             context["ordered_project_list"] = Project.objects.filter(contractor_user=self.request.user).filter(is_accepted=False)
@@ -190,7 +191,6 @@ class ProjectDetailView(DetailView):
         # 本当は、projectに紐づいている、taskに紐づいているfeedbackだけ取り出したい
         context["feedbacks"] = Feedback.objects.filter(task_id__in=context["tasks"])
         # for f in context["feedbacks"]:
-        list = context["feedbacks"][1].marker_of_midi
         # print(list)
         # for li in list:
         #     print(li)
@@ -381,22 +381,20 @@ class ToDoDoneView(UpdateView):
     ]
 
     def get_success_url(self):
-        return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["project_id"]})
+        return reverse_lazy("project:project_detail", kwargs={"pk": self.object.project.id})
 
     def form_valid(self, form):
         task = form.save(commit=False)
-        task.project_id = self.kwargs["project_id"]
         task.is_done = True
-
         task.save()
-        print(self.kwargs["pk"])
         return super().form_valid(form)    
-    
+
+
 class ToDoDeleteView(DeleteView):
     model = ToDo
     template_name = "task_delete.html"
-    success_url = reverse_lazy("project:index")
-
+    def get_success_url(self):
+        return reverse_lazy("project:project_detail", kwargs={"pk": self.object.project.id})
 
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)

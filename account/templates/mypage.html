@@ -3,91 +3,102 @@
 {% block contents %}
 
 <div class="container">
-  <div class="card py-2 px-3 bg-light">
+  <div class="d-flex border-bottom mb-3">
+    <h5 class="mb-1">
+      {{request.user}}さんのプロフィール
+    </h5>
+    <a href="{% url "account:user_update" request.user.pk %}" class="ms-3">編集する</a>
+  </div>
 
-
-    <h4>{{request.user}}さんのページ</h4>
-
-    <p>現在の登録情報</p>
-  
-  
-    <p>お名前</p>
-    {% if object.last_name or object.first_name %}
-    <p>{{object.last_name}}　{{object.first_name}}</p>
-    {% else %}
-
-    <p>登録されていません</p>
-    {% endif %}
-    <p>メールアドレス</p>
-    {% if object.email %}
-    <p>{{object.email}}</p>
-    {% else %}
-    <p>登録されていません</p>
-    {% endif %}
-  
-  
-    <h6>詳細情報</h6>
-    {% if details %}
-  
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-    {% for detail in details %}
-      {% if forloop.first %}
-  
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="{{detail.label_select}}-tab" data-bs-toggle="tab" data-bs-target="#{{detail.label_select}}-tab-pane" type="button" role="tab" aria-controls="{{detail.label_select}}-tab-pane" aria-selected="true">{{detail.label_select}}</button>
-      </li>
+  <div class="card py-3 pb-2 px-3 mb-4">
+    <div class="row mb-3">
+      <div class="col-sm-3">お名前</div>
+      {% if object.last_name or object.first_name %}
+      <div class="col-sm-6">{{object.last_name}}　{{object.first_name}}</div>
       {% else %}
-  
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="{{detail.label_select}}-tab" data-bs-toggle="tab" data-bs-target="#{{detail.label_select}}-tab-pane" type="button" role="tab" aria-controls="{{detail.label_select}}-tab-pane" aria-selected="false">{{detail.label_select}}</button>
-      </li>
+      <div class="col-sm-6">登録されていません</div>
       {% endif %}
-  
-  
-    
-    {% endfor %}
-    
-  
-    </ul>
-    <div class="tab-content" id="myTabContent">
-    {% for detail in details %}
-      {% if forloop.first %}
-  
-  
-      <div class="tab-pane fade show active" id="{{detail.label_select}}-tab-pane" role="tabpanel" aria-labelledby="{{detail.label_select}}-tab" tabindex="0">
-        <p>{{detail.profile}}</p>
-        <p>{{detail.rule}}</p>
-        <a href="{% url "account:update_feedback_rule" detail.pk %}">編集する</a>
-  
-      </div>
-      {% else %}
-      <div class="tab-pane fade" id="{{detail.label_select}}-tab-pane" role="tabpanel" aria-labelledby="{{detail.label_select}}-tab" tabindex="0">
-        <p>{{detail.profile}}</p>
-        <p>{{detail.rule}}</p>
-        <a href="{% url "account:update_feedback_rule" detail.pk %}">編集する</a>
-  
-      </div>
-      {% endif %}
-      {% comment %} <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">...</div>
-      <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div> {% endcomment %}
-    {% endfor %}
-  
     </div>
-    
-  
-    {% else %}
-    <p>詳細情報が登録されていません。</p>
-    <a href="{% url "account:create_feedback_rule" %}">登録はこちら</a>
-    
-    {% endif %}
-    
-  
-  
-  
 
+    <div class="row mb-2">
+      <div class="col-sm-3">メールアドレス</div>
+      {% if object.email %}
+      <div class="col-sm-6">{{object.email}}</div>
+      {% else %}
+      <div class="col-sm-6">登録されていません</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="d-flex border-bottom mb-3">
+    <h5 class="mb-1">
+      フィードバックルール
+    </h5>
+    {% comment %} <p class="text-secondary">フィードバックルールは3つまで設定できます</p> {% endcomment %}
 
   </div>
+
+  {% if details %}
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+  {% for detail in details %}
+    <li class="nav-item" role="presentation">
+      <button 
+    {% if forloop.first %}
+      class="nav-link active" aria-selected="true"
+    {% else %}
+      class="nav-link" aria-selected="false"
+    {% endif %}
+      id="{{detail.label_select}}-tab" data-bs-toggle="tab" data-bs-target="#{{detail.label_select}}-tab-pane" type="button" role="tab" aria-controls="{{detail.label_select}}-tab-pane" >ルール{{forloop.counter}}</button>
+    </li>
+    {% if forloop.last and forloop.counter != 3 %}
+    <li class="nav-item" role="presentation">
+      <button class="nav-link bg-primary" onclick="location.href='{% url "account:create_feedback_rule" forloop.counter %}'" type="button" role="tab"><strong class="text-white">＋ルールを追加する</strong></button>
+  </li>
+    
+    {% endif %}
+  {% endfor %}
+  </ul>
+
+
+
+  <div class="tab-content bg-white py-3 pb-2 px-3  border border-top-0 rounded-bottom shadow-sm" id="myTabContent">
+  {% for detail in details %}
+    {% if forloop.first %}
+
+
+    <div class="tab-pane fade show active" id="{{detail.label_select}}-tab-pane" role="tabpanel" aria-labelledby="{{detail.label_select}}-tab" tabindex="0">
+      <p>{{detail.profile}}</p>
+      <p>{{detail.rule}}</p>
+      <a href="{% url "account:update_feedback_rule" detail.pk %}">編集する</a>
+
+    </div>
+    {% else %}
+    <div class="tab-pane fade" id="{{detail.label_select}}-tab-pane" role="tabpanel" aria-labelledby="{{detail.label_select}}-tab" tabindex="0">
+      <p>{{detail.profile}}</p>
+      <p>{{detail.rule}}</p>
+      <a href="{% url "account:update_feedback_rule" detail.pk %}">編集する</a>
+
+    </div>
+    {% endif %}
+    {% comment %} <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">...</div>
+    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">...</div>
+    <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">...</div> {% endcomment %}
+  {% endfor %}
+
+  </div>
+  
+
+  {% else %}
+  <p>まだ登録されていません。</p>
+  <a href="{% url "account:create_feedback_rule" %}">登録はこちら</a>
+  
+  {% endif %}
+  
+
+
+
+
+
 
 </div>
 

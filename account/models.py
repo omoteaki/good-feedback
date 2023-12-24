@@ -67,9 +67,9 @@ class UserDetail(models.Model):
     )
 
     LABEL = (
-        ("detail1", "プロフィール1(デフォルト)"),
-        ("detail2", "プロフィール2"),
-        ("detail3", "プロフィール3"),
+        ("detail0", "ルール1"),
+        ("detail1", "ルール2"),
+        ("detail2", "ルール3"),
 
     )
 

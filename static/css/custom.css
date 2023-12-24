@@ -2158,7 +2158,8 @@ progress {
   opacity: 1;
 }
 .form-control:disabled {
-  background-color: var(--bs-secondary-bg);
+  background-color: #f6ce44;
+  border-color: #f6ce44;
   opacity: 1;
 }
 .form-control::file-selector-button {
@@ -2297,7 +2298,8 @@ textarea.form-control-lg {
   background-image: none;
 }
 .form-select:disabled {
-  background-color: var(--bs-secondary-bg);
+  background-color: #f6ce44;
+  border-color: #f6ce44;
 }
 .form-select:-moz-focusring {
   color: transparent;
@@ -2654,7 +2656,7 @@ textarea.form-control-lg {
   color: #6c757d;
 }
 .form-floating > :disabled ~ label::after {
-  background-color: var(--bs-secondary-bg);
+  background-color: #f6ce44;
 }
 
 .input-group {

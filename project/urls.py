@@ -21,9 +21,10 @@ urlpatterns = [
     path('task-edit/<int:pk>', views.TaskEditView.as_view(), name="task_edit"),
     path('task-delete/<int:pk>', views.TaskDeleteView.as_view(), name="task_delete"),
     path('add-todo/<int:pk>/<int:project_id>', views.ToDoCreateView.as_view(), name="add_todo"),
-    path('todo-check/<int:pk>/<int:project_id>', views.ToDoDoneView.as_view(), name="todo_checked"),
+    path('todo-check/<int:pk>', views.ToDoDoneView.as_view(), name="todo_checked"),
     path('todo-delete/<int:pk>', views.ToDoDeleteView.as_view(), name="todo_delete"),
 
 
     path('about', views.AboutUsView.as_view(), name="about_us"),
+    # path('project/<int:pk>/done', views.done_todo, name="done_todo"),
 ]

@@ -17,5 +17,11 @@ class CustomUserCreationForm(UserCreationForm):
 class UserDetailForm(ModelForm):
     class Meta:
         model = UserDetail
-        # fields = "__all__"
-        exclude = ("user",)
+        fields = (
+            "label_select",
+            "profile",
+            "rule",
+            "convenient_time_from",
+            "convenient_time_to",
+            "how_to_contact",
+        )
