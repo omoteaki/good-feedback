@@ -7,8 +7,8 @@ from django.http import HttpResponseRedirect
 
 from datetime import date, time, datetime, timedelta
 from django.utils.timezone import make_aware
-# from backports.zoneinfo import ZoneInfo
-from zoneinfo import ZoneInfo
+from backports.zoneinfo import ZoneInfo
+# from zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
@@ -22,9 +22,6 @@ from feedback.models import Feedback
 from account.models import UserDetail, CustomUser
 from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm, UpdateProjectForm, ProjectProposeForm
 
-
-# class MyPageView(DetailView):
-#     template_name =
 
 
 # ログインしていなかったらindex、ログインユーザーならマイページ
@@ -41,9 +38,7 @@ class IndexView(ListView):
     def get_context_data(self, **kwargs):
         if  self.request.user.is_authenticated:
             context = super().get_context_data(**kwargs)
-            # context["details"] = UserDetail.objects.filter(user=self.request.user)
             context["myproject"] = True
-            # print(context["details"])
             context["closed_project"] = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).filter(is_done=True)
             context["ordered_project_list"] = Project.objects.filter(contractor_user=self.request.user).filter(is_accepted=False)
             context["order_project_list"] = Project.objects.filter(orderer_user=self.request.user).filter(is_accepted=False)
@@ -59,16 +54,8 @@ class IndexView(ListView):
                 else:
                     object.int_delta = 0
 
-                # txt[:pos]
-                # print(type(object.int_delta), end=",")
-
-            # for object in context["object_list"]:
-            #     print(object.id)
-
             context["near_deadline_objects"] = context["object_list"].filter(delta__lte=timedelta(weeks=1))
 
-            # for object in context["near_deadline_objects"]:
-            #     print(object)
             return context
         else:
             pass
@@ -89,7 +76,15 @@ class ProposeProjectView(UpdateView):
 
     def form_valid(self, form):
         project = form.save(commit=False)
+        c_supporters_list = form.cleaned_data.get("c_supporter")
+
         project.save()
+        if c_supporters_list:
+            for c_supporter in c_supporters_list:
+                project.contractor_users.add(CustomUser.objects.get(username=c_supporter))
+
+        form.save_m2m()
+
         return super().form_valid(form)
 
 class SetFeedbackView(UpdateView):
@@ -135,8 +130,7 @@ class CreateProjectView(CreateView):
         return context
     
     def get_success_url(self):
-        # return reverse_lazy("project:create_project_done", kwargs={"created_user_id": self.request.user.id})
-        return reverse_lazy("project:project_update", kwargs={"pk": self.object.pk})
+        return reverse_lazy("project:create_project_done", kwargs={"pk": self.object.pk})
 
     def form_valid(self, form):
 
@@ -144,43 +138,28 @@ class CreateProjectView(CreateView):
         supporters_list = form.cleaned_data.get("supporter")
         new_project.created_user = self.request.user
         new_project.orderer_user = self.request.user
-        # new_project.deadline_datetime = datetime.combine(form.cleaned_data["date"], form.cleaned_data["time"], tzinfo=ZoneInfo(key='Asia/Tokyo'))
+        print(supporters_list)
         new_project.save()
 
         if supporters_list:
             for supporter in supporters_list:
-                new_project.orderer_users.add(CustomUser.objects.get(username=supporter))
+                if supporter:
+                    new_project.orderer_users.add(CustomUser.objects.get(username=supporter))
 
         form.save_m2m()
 
 
-        project_data = form.cleaned_data
-        # project_data["time"] = ""
-        # project_data["date"] = ""
-        # print(project_data["orderer_users"])
-        project_data["deadline_datetime"] = ""
-        project_data["contractor_user"] = ""
-        # project_data["orderer_users"] = ""
-        if not 'form_project' in self.request.session:
-            self.request.session['form_project'] = project_data
 
         return super().form_valid(form)
 
-class CreateProjectSuccessView(ListView):
+
+class CreateProjectSuccessView(UpdateView):
     template_name = "new_project.html"
-    # model = Project
+    model = Project
+    form_class = CreateProjectForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["new_project"] = self.request.session["form_project"]
-        return context
 
-    def get_queryset(self):
-        print(self.request.user)
-        new_project_id = Project.objects.filter(created_user = self.kwargs["created_user_id"]).aggregate(Max("id"))
-        new_project = Project.objects.get(id=new_project_id["id__max"])
-        return new_project
-    
+
 
 class ProjectListView(ListView):
     template_name = "project_list.html"

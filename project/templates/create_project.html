@@ -10,7 +10,7 @@
 
   {% for field in form %}
 
-    {% if field == form.deadline_datetime %}
+  {% if field == form.deadline_datetime %}
     <div class="mb-3 row">
       <label class="form-label" for="">締め切り日時</label>
       <div class="col">
@@ -29,7 +29,7 @@
     </div>
     
     
-    {% else %}
+  {% else %}
 
     <div class="mb-3">
       <label class="form-label" for="{{field.id_for_label}}">{{field.label}}</label>
@@ -39,21 +39,28 @@
       {% endfor %}
     </div>
 
+    {% if field == form.supporter %}
+    <div class="mb-3">
 
+      <button class="btn btn-secondary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReference" aria-expanded="false" aria-controls="collapseReference">
+        ＋参考資料をアップロードする
+      </button>
+    </div>
+    <div class="collapse" id="collapseReference">
+      {% comment %} <div class="card card-body"> {% endcomment %}
 
+    {% elif field == form.reference_url3 %}
+      {% comment %} </div> {% endcomment %}
+    </div>
     {% endif %}
+
+
+  {% endif %}
 
 
   {% endfor %}
   
-  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-    Button with data-bs-target
-  </button>
-  <div class="collapse" id="collapseExample">
-    <div class="card card-body">
-      Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
-    </div>
-  </div>
+
   
     <button type="submit" class="btn btn-primary">作成する</button>
   </form>

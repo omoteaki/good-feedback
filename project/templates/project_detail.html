@@ -57,10 +57,9 @@
     <!-- 概要 -->
     <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
       <div class="div">
-        <p>発注内容 : <br>
-          {{project.about|linebreaksbr}}
+        <p>発注内容 : 
+          {{project.markdown_to_html|safe|linebreaksbr}}
         </p>
-          {{project.markdown_to_html|safe}}
         <p>目標 : <br>
           {{project.purpose|linebreaksbr}}
         </p>

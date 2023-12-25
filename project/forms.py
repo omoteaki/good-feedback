@@ -4,9 +4,7 @@ from .models import Project, Task, ToDo
 from account.models import CustomUser
 
 class CreateProjectForm(forms.ModelForm):
-    # date = forms.DateField(label="日にち")
-    # time = forms.TimeField(label="時間")
-    # deadline_datetime = forms.SplitDateTimeField(required=False)
+
     deadline_datetime = forms.SplitDateTimeField(
         label="締め切り日時",
         widget=forms.SplitDateTimeWidget(
@@ -20,7 +18,7 @@ class CreateProjectForm(forms.ModelForm):
         CustomUser.objects,
         to_field_name='username',
         label='受注者のユーザーID',
-        empty_label='選択してください',
+        empty_label='入力してください',
         widget=forms.TextInput,
         error_messages={'invalid_choice':'このユーザーID存在しません'}
     )
@@ -29,14 +27,7 @@ class CreateProjectForm(forms.ModelForm):
         max_length=255,
         required=False
     )
-    # widgets = {
-    #     'date': forms.NumberInput(attrs={
-    #         "type": "date"
-    #     }),
-    #     'time': forms.NumberInput(attrs={
-    #         "type": "time"
-    #     })
-    # }
+
     class Meta:
         model = Project
         fields = [
@@ -68,15 +59,6 @@ class CreateProjectForm(forms.ModelForm):
             "reference_url3",
         ]
 
-        # widgets = {
-        #     'deadline_datetime': forms.Textarea
-        # }
-
-
-        widgets = {
-            "deadline_datetime": forms.widgets.SplitDateTimeWidget
-            # "deadline_datetime": forms.widgets.SelectDateWidget
-        }
     def clean_supporter(self):
         supporter = self.cleaned_data.get("supporter")
         supporters_list = supporter.split(",")
@@ -89,7 +71,6 @@ class UpdateProjectForm(forms.ModelForm):
     time = forms.TimeField(label="時間", initial="12:00")
     deadline_datetime = forms.DateTimeField(required=False)
 
-    
 
     class Meta:
         model = Project
@@ -120,24 +101,26 @@ class UpdateProjectForm(forms.ModelForm):
 
         ]
 
-        # widgets = {
-        #     'deadline_datetime': forms.Textarea
-        # }
-
-
-        # widgets = {
-        #     "deadline_datetime": forms.widgets.SplitDateTimeWidget
-        # }
 
 
 
 class ProjectProposeForm(forms.ModelForm):
+    c_supporter = forms.CharField(
+        label="あなたのサポーター",
+        max_length=255,
+        required=False
+    )
     class Meta:
         model = Project
         fields = [
             "is_accepted",
-            "contractor_users",
+            "c_supporter",
         ]
+
+    def clean_c_supporter(self):
+        c_supporter = self.cleaned_data.get("c_supporter")
+        c_supporters_list = c_supporter.split(",")
+        return c_supporters_list
 
 
 

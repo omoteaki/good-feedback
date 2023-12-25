@@ -17,7 +17,7 @@
     <div class="alert alert-warning mb-2" role="alert">
       お仕事の依頼が届いています！
     </div>
-    <ul>
+    <ul class="">
       {% for ordered_project in ordered_project_list %}
       <li>
         <a href="{% url "project:propose_project" ordered_project.pk %}">{{ordered_project}}</a>
@@ -94,7 +94,7 @@
           {{record}}
         </div>
         <small class="ms-auto text-body-secondary">{{record.deadline_datetime}}</small>
-        <span class="ms-3 badge {% if record.int_delta < 4 %}text-bg-danger {% elif record.int_delta < 8 %} text-bg-warning {% else %} text-bg-success {% endif %}">あと{{record.int_delta}}日</span></a>
+        <span class="ms-3 badge {% if record.int_delta < 4 %}text-bg-danger text-white {% elif record.int_delta < 8 %} text-bg-warning text-white {% else %} text-bg-success text-white {% endif %}">あと{{record.int_delta}}日</span></a>
       
       {% endfor %}
     </div>
@@ -131,48 +131,11 @@
 
   <div class="row">
     <div class="col-sm">
-      <a class="btn btn-primary shadow-sm mb-3" href="{% url "project:create_project" %}" role="button">プロジェクトを作成して仕事を依頼する</a>
+      <a class="btn btn-primary text-light fw-bold shadow-sm mb-3" href="{% url "project:create_project" %}" role="button">プロジェクトを作成して仕事を依頼する</a>
       
     </div>
 
   </div>
 </div>
-
-{% comment %}     
-    <div class="col-sm">
-      <a href="" class="btn btn-secondary shadow-sm mb-3">フィードバックルールを設定して、仕事を受ける</a>
-      
-  {% if details %}
-  {% for detail in details %}
-  <div class="card mb-3">
-    <div class="card-body">
-      <p class="card-text">{{detail.profile}}</p>
-      <p class="card-text">{{detail.rule}}</p>
-      <p class="card-text"><small class="text-body-secondary">連絡の取りやすい時間帯 : {{detail.convenient_time_from}}~{{detail.convenient_time_to}}</small></p>
-
-    </div>
-    
-  </div>
-
-  {% endfor %}
-
-
-  {% else %}
-
-  <p>まだ{{request.user}}さんのお仕事プロフィールが登録されていません。</p>
-  <p>
-    <a href="{% url "account:create_feedback_rule" %}">
-      お仕事プロフィールの登録はこちら
-    </a>
-  </p>
-
-  {% endif %}
-
-    </div>
-  </div>
-
-
-{% endcomment %}
-
 
 
