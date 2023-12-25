@@ -1,13 +1,34 @@
-
-# from django.forms import ModelForm, Textarea
 from django import forms
+
 from .models import Project, Task, ToDo
+from account.models import CustomUser
 
 class CreateProjectForm(forms.ModelForm):
     # date = forms.DateField(label="日にち")
     # time = forms.TimeField(label="時間")
     # deadline_datetime = forms.SplitDateTimeField(required=False)
-    deadline_datetime = forms.SplitDateTimeField()
+    deadline_datetime = forms.SplitDateTimeField(
+        label="締め切り日時",
+        widget=forms.SplitDateTimeWidget(
+            date_attrs={"type":"date"},
+            time_attrs={"type":"time"}
+        )
+    )
+
+    
+    contractor_user = forms.ModelChoiceField(
+        CustomUser.objects,
+        to_field_name='username',
+        label='受注者のユーザーID',
+        empty_label='選択してください',
+        widget=forms.TextInput,
+        error_messages={'invalid_choice':'このユーザーID存在しません'}
+    )
+    supporter = forms.CharField(
+        label="あなたのサポーター",
+        max_length=255,
+        required=False
+    )
     # widgets = {
     #     'date': forms.NumberInput(attrs={
     #         "type": "date"
@@ -30,8 +51,9 @@ class CreateProjectForm(forms.ModelForm):
             # "updated_at",
             # "orderer_user",
             "contractor_user",
-            "orderer_users",
+            # "orderer_users",
             # "contractor_users",
+            "supporter",
             "reference_image1",
             "reference_image2",
             "reference_image3",
@@ -55,6 +77,10 @@ class CreateProjectForm(forms.ModelForm):
             "deadline_datetime": forms.widgets.SplitDateTimeWidget
             # "deadline_datetime": forms.widgets.SelectDateWidget
         }
+    def clean_supporter(self):
+        supporter = self.cleaned_data.get("supporter")
+        supporters_list = supporter.split(",")
+        return supporters_list
 
 
 

@@ -26,9 +26,12 @@
 
   <h5 class="pb-1 border-bottom">プロジェクト : {{project.title}}
   {% if request.user == project.orderer_user %}
-    <span>
+    {% if project.is_accepted == False %}
+    <span class="badge bg-secondary">確認待ち</span>
+    {% endif %}
+    {% comment %} <span> {% endcomment %}
       <a href="{% url "project:project_update" project.pk %}" class="fs-6">プロジェクトを編集する</a>
-    </span>
+    {% comment %} </span> {% endcomment %}
   {% endif %}
   </h5>
 
@@ -101,15 +104,47 @@
       <div class="div">
         <p class="mt-3">このプロジェクトに関連するToDoリスト</p>
         {% if todo_list %}
-        <ul class="list-group">
+        <ul class="list-group mb-3">
           {% for todo in todo_list %}
           <li class="list-group-item d-flex">
-            <input class="form-check-input me-1" type="checkbox" value="" id="todoNum{{todo.pk}}" {% if todo.is_done %}
-            checked{% endif %} onclick="location.href='{% url "project:todo_checked" todo.pk %}'">
-            <label class="form-check-label" for="todoNum{{todo.pk}}">{{todo}}</label>
-            <a href="{% url "project:todo_delete" todo.pk %}" class=" ms-auto">
+            <form action="{% url "project:todo_done" todo.pk %}" method="post">
+            {% csrf_token %}
+              <input class="form-check-input me-1" type="checkbox" value="" id="todoNum{{todo.pk}}" {% if todo.is_done %}
+              checked{% endif %} onchange="submitForm(event)">
+              <label class="form-check-label" for="todoNum{{todo.pk}}">{{todo}}</label>
+            </form>
+
+
+            <!-- Button trigger modal -->
+            <button type="button" class="border-0 bg-white text-primary ms-auto" data-bs-toggle="modal" data-bs-target="#exampleModal{{todo.pk}}">
               <i class="bi bi-trash"></i>
-            </a>
+            </button>
+            
+            
+            
+            
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal{{todo.pk}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel{{todo.pk}}">ToDoを削除します</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    {{todo}}
+                  </div>
+                  <div class="modal-footer">
+                    <form action="{% url "project:todo_delete" todo.pk %}" method="post">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">戻る</button>
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-primary">削除する</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
           </li>
           {% endfor %}
         </ul>
@@ -122,9 +157,15 @@
 
 
     </div>
-
-
-
+    <script>
+      function submitForm(event) {
+        // クリックされたボタンの親要素（ここではフォーム）を取得
+        var form = event.currentTarget.form;
+    
+        // フォームを送信
+        form.submit();
+      }
+    </script>
 
     <!-- 参加者 -->
     <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">

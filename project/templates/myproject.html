@@ -11,6 +11,7 @@
     新着フィードバックが件あります。<a href="" class="alert-link">確認する</a>
   </div> {% endcomment %}
 
+
   {% if ordered_project_list %}
   <div class="">
     <div class="alert alert-warning mb-2" role="alert">
@@ -28,6 +29,23 @@
   
   {% endif %}
 
+  
+  {% if order_project_list %}
+  <div class="">
+    <div class="alert alert-info mb-2" role="alert">
+      受注者の確認待ちプロジェクトがあります
+    </div>
+    <ul>
+      {% for ordered_project in order_project_list %}
+      <li>
+        <a href="{% url "project:project_detail" ordered_project.pk %}">{{ordered_project}}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    <p></p>
+  </div>
+  
+  {% endif %}
 
   {% if near_deadline_objects %}
   <!-- 締め切りが近いプロジェクトの一覧 -->
