@@ -5,7 +5,8 @@
 <div class="container">
   <div class="d-flex border-bottom mb-3">
     <h5 class="mb-1">
-      {{request.user}}さんのプロフィール
+      {% if request.user.last_name %}
+      {{request.user.last_name}}{% else %}{{request.user}}{% endif %}さんのプロフィール
     </h5>
     <a href="{% url "account:user_update" request.user.pk %}" class="ms-3">編集する</a>
   </div>

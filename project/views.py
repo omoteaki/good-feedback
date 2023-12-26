@@ -7,8 +7,8 @@ from django.http import HttpResponseRedirect
 
 from datetime import date, time, datetime, timedelta
 from django.utils.timezone import make_aware
-# from backports.zoneinfo import ZoneInfo
-from zoneinfo import ZoneInfo
+from backports.zoneinfo import ZoneInfo
+# from zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
@@ -81,11 +81,15 @@ class ProposeProjectView(UpdateView):
         project.save()
         if c_supporters_list:
             for c_supporter in c_supporters_list:
-                project.contractor_users.add(CustomUser.objects.get(username=c_supporter))
-
+                if c_supporter:
+                    project.contractor_users.add(CustomUser.objects.get(username=c_supporter))
         form.save_m2m()
 
+        if not 'start_message' in self.request.session:
+            self.request.session['start_message'] = "start"
+
         return super().form_valid(form)
+
 
 class SetFeedbackView(UpdateView):
     model = Project
@@ -99,11 +103,14 @@ class SetFeedbackView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if 'start_message' in self.request.session:
+            context["start_message"] = self.request.session['start_message']
+            del self.request.session['start_message']
         context["user_detail_list"] = UserDetail.objects.filter(user_id=self.request.user)
-        print(context["user_detail_list"])
-        print(context["form"].fields["feedback_rule"].queryset)
+        # print(context["user_detail_list"])
+        # print(context["form"].fields["feedback_rule"].queryset)
         context["form"].fields["feedback_rule"].queryset = UserDetail.objects.filter(user=self.request.user)
-        print(context["form"].fields["feedback_rule"].queryset)
+        # print(context["form"].fields["feedback_rule"].queryset)
         if not 'propose_message' in self.request.session:
             self.request.session['propose_message'] = "warning"
         return context
@@ -166,11 +173,7 @@ class ProjectListView(ListView):
     def get_queryset(self):
         projects = Project.objects.filter(created_user= self.request.user)
         return projects
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     print(self.object_list)
-    #     return context
-    
+
 
 class ProjectDetailView(DetailView):
     template_name = "project_detail.html"
@@ -278,6 +281,7 @@ class AddTaskView(CreateView):
         context = super().get_context_data(**kwargs)
         context["button_message"] = "タスクを追加する"
         context["pk"] = self.kwargs["pk"]
+        context["project"] = Project.objects.get(id=self.kwargs["pk"])
         print(context)
         print(self.kwargs)
         return context
@@ -354,6 +358,12 @@ class TaskDeleteView(DeleteView):
 class ToDoCreateView(CreateView):
     form_class = ToDoCreateForm
     template_name = "add_todo.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["task"] = Task.objects.get(id=self.kwargs["pk"])
+        return context
+    
 
     def get_success_url(self):
         return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["project_id"]})

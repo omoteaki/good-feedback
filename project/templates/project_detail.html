@@ -16,11 +16,17 @@
     <div class="alert alert-success mb-2" role="alert">
       プロジェクトが開始しました！
     </div>
-    {% else %}
+    {% elif message == "warning" %}
     <div class="alert alert-warning mb-2" role="alert">
       プロジェクトが開始しました！フィードバックルールが未設定です。早めに設定しましょう！
     </div>
     {% endif %}
+  {% endif %}
+
+  {% if not project.feedback_rule %}
+  <div class="alert alert-warning mb-2" role="alert">
+    フィードバックルールが未設定です。早めに <a href="{% url "project:feedback_set" project.pk %}">設定</a> しましょう！
+  </div>
   {% endif %}
 
 
@@ -29,9 +35,7 @@
     {% if project.is_accepted == False %}
     <span class="badge bg-secondary">確認待ち</span>
     {% endif %}
-    {% comment %} <span> {% endcomment %}
       <a href="{% url "project:project_update" project.pk %}" class="fs-6">プロジェクトを編集する</a>
-    {% comment %} </span> {% endcomment %}
   {% endif %}
   </h5>
 
@@ -169,7 +173,8 @@
     <!-- 参加者 -->
     <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
 
-      <p>発注者 : {{project.orderer_user}}さん{% if project.orderer_user == request.user %}(あなた){% endif %}</p>
+      <p>発注者 : {% if project.orderer_user.last_name %}
+        {{project.orderer_user.last_name}}{% else %}{{project.orderer_user}}{% endif %}さん{% if project.orderer_user == request.user %}(あなた){% endif %}</p>
 
       {% if project.orderer_users.all %}
       <p>発注者のサポート : 
@@ -178,7 +183,8 @@
         {% endfor %}
       </p>
       {% endif %}
-      <p>受注者 : {{project.contractor_user}}さん{% if project.contractor_user == request.user %}(あなた){% endif %}</p>
+      <p>受注者 : {% if project.contractor_user.last_name %}
+        {{project.contractor_user.last_name}}{% else %}{{project.contractor_user}}{% endif %}さん{% if project.contractor_user == request.user %}(あなた){% endif %}</p>
       {% for de in detail %}
       <p>{{de.profile}}</p>
       {% endfor %}
@@ -215,8 +221,8 @@
 
 
     <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">
-      フィードバックルール
-      {{project.feedback_rule.rule}}
+      フィードバックルール<br>
+      {{project.feedback_rule.rule|linebreaksbr}}
     </div>
   </div>
 

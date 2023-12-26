@@ -3,7 +3,16 @@
 
 {% block contents %}
 
+
+
 <div class="container">
+
+  <a href="{% url "project:project_detail" project.id %}">プロジェクト：{{project}}</a>
+
+  <div class="border-bottom d-flex justify-content-between mb-2">
+    <h5 class="mb-0" >タスクの追加</h5>
+  </div>
+
 
 {% include "_form.html" %}
 

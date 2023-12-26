@@ -140,4 +140,4 @@ class ToDoCreateForm(forms.ModelForm):
     class Meta:
         model = ToDo
         # fields = "__all__"
-        exclude = ("project", "task")
+        exclude = ("project", "task", "is_done")

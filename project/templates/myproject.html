@@ -2,7 +2,8 @@
 
   <div class="d-flex border-bottom mb-2">
     <h5 class="mb-1">
-      {{request.user}}さんの管理ページ
+      {% if request.user.last_name %}
+      {{request.user.last_name}}{% else %}{{request.user}}{% endif %}さんの管理ページ
     </h5>
     <a href="{% url "account:mypage" request.user.pk %}" class="ms-3">プロフィールの確認・編集</a>
   </div>

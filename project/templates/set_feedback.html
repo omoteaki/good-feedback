@@ -12,9 +12,16 @@
   </div>
 
   <div class="ps-3">
+    {% if start_message %}
+    
     <p>まだプロジェクトは開始していません。<br>
       フィードバックルールを設定して、プロジェクトを始めましょう！
     </p>
+    {% else %}
+    <p>
+      フィードバックルールを設定しましょう！
+    </p>
+    {% endif %}
   </div>
 
 
@@ -39,7 +46,9 @@
     <p>{{request.user}}さんはまだフィードバックルールのテンプレートが設定されていません。サンプルを参考にフィードバックルールを設定してください。<small>(一度テンプレートを保存すると他のプロジェクトでも使うことができます)</small></p>
   
     <a href="{% url "account:create_feedback_rule" %}">フィードバックルールを設定する</a>
+    {% if start_message %}
     <a href="{% url "project:project_detail" object.pk %}">設定をスキップしてプロジェクトを開始する</a>
+    {% endif %}
   {% endif %}
   </div>
 
