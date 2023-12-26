@@ -5,30 +5,7 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     pass
-    # detail1 = models.ForeignKey(
-    #     UserDetail,
-    #     verbose_name="お仕事プロフィール1(デフォルト)",
-    #     on_delete=models.PROTECT,
-    #     related_name="detail1",
-    #     blank=True,
-    #     null=True,
-    # )
-    # detail2 = models.ForeignKey(
-    #     UserDetail,
-    #     verbose_name="お仕事プロフィール2",
-    #     on_delete=models.PROTECT,
-    #     blank=True,
-    #     null=True,
-    #     related_name="detail2",
-    # )
-    # detail3 = models.ForeignKey(
-    #     UserDetail,
-    #     verbose_name="お仕事プロフィール3",
-    #     on_delete=models.PROTECT,
-    #     blank=True,
-    #     null=True,
-    #     related_name="detail3",
-    # )
+
 
 class UserDetail(models.Model):
     profile = models.TextField(
@@ -80,5 +57,4 @@ class UserDetail(models.Model):
     )
 
     def __str__(self):
-        detail_label_name = str(self.user) + str(self.label_select)
-        return detail_label_name
+        return self.label_select

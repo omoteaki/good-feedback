@@ -7,8 +7,8 @@ from django.http import HttpResponseRedirect
 
 from datetime import date, time, datetime, timedelta
 from django.utils.timezone import make_aware
-from backports.zoneinfo import ZoneInfo
-# from zoneinfo import ZoneInfo
+# from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
