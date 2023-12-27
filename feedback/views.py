@@ -41,6 +41,8 @@ class FeedbackReplyView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["reply_to"] = Feedback.objects.get(id=self.kwargs["feedback_id"])
+        context["task"] = Task.objects.get(id=self.kwargs["task_id"])
+
         return context
     
 
