@@ -1,7 +1,7 @@
 $primary: #f6ce44;
 $secondary: #dec4b4;
 $success: #7fb84c;
-$info: #b95e51;
+$info: #51b2b9;
 $warning: #fca814;
 $danger: #f44336;
 $light: #f8f8f5;
@@ -23,6 +23,15 @@ $card-box-shadow: $box-shadow-sm;
 // $border-style:                none;
 
 
-
+$input-disabled-bg:$primary;
+$input-disabled-border-color:       $primary;
+$form-select-disabled-bg:           $primary;
 
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+br {
+    display: block;
+    content: "";
+    margin: 4px 0;
+    }
+

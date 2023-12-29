@@ -1,0 +1,49 @@
+<!-- フィードバック表示画面 -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">フィードバック</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <div class="offcanvas-body">
+  {% for task in tasks %}
+    <div class="card text-bg-light mb-3 text-decoration-none" style="max-width: 100%;">
+      <a href="{% url "project:task_detail" task.pk %}" class="card-header">タスク : {{task}}</a>
+
+      <a href="{% url "feedback:feedback_add" task.pk %}" class="card-body d-flex text-decoration-none">
+        <p class="card-text mb-0">{{task.content}}</p>
+        <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
+      </a>
+    </div>
+
+    {% for feedback in feedbacks %}
+      {% if feedback.task.id == task.id %}
+        {% if feedback.self == null %}
+        <div class="card {% if request.user == feedback.user %}text-bg-primary ms-auto {% else %} text-bg-secondary {% endif %} mb-3 d-flex" style="max-width: 18rem;">
+          <a href="{% url "feedback:reply" task.pk feedback.pk %}" class="card-body d-flex text-decoration-none">
+            <p class="card-text mb-0">{{feedback.comment}}</p>
+            <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
+          </a>
+        </div>
+
+        {% else %}
+        <div class="card {% if request.user == feedback.user %}text-bg-primary ms-auto {% else %} text-bg-secondary {% endif %} mb-3" style="max-width: 18rem;">
+          <div class="card-header">
+            <small style="opacity: 0.9;">
+              >{{feedback.self.comment}}
+            </small>
+          </div>
+          <a href="{% url "feedback:reply" task.pk feedback.pk %}" class="card-body d-flex text-decoration-none">
+            <p class="card-text mb-0">{{feedback.comment}}</p>
+            {% if feedback.midi %}
+            <a class="text-white" href="{% url "feedback:help" feedback.pk %}">試聴ページに行く</a>
+            {% endif %}
+            <small class="ms-auto mt-auto"><i class="bi bi-arrow-90deg-left"></i></small>
+          </a>
+        </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  </div>
+</div>

@@ -1,14 +1,56 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 
 {% block contents %}
 
-<h1>新しくプロジェクトが作成されました！</h1>
-
-{{new_project}}
-{{ object_list }}
-
-{{ object_list.created_user }}
+<div class="container">
 
 
-<a href="{% url "project:project_list" %}">{{request.user}}さんが作成したプロジェクト一覧はこちら</a>
+
+  <h5 class="pb-1 border-bottom">新しいプロジェクトが作成されました : {{project.title}}</h5>
+    
+
+  {% for field in form %}
+
+  {% if field == form.deadline_datetime %}
+    <div class="mb-3 row">
+      <label class="form-label" for="">締め切り日時</label>
+      <div class="col">
+        
+        <input type="date" name="deadline_datetime_0" class="form-control" required="" id="id_deadline_datetime_0">
+      </div>
+      <div class="col">
+        <input type="time" name="deadline_datetime_1" class="form-control" required="" id="id_deadline_datetime_1">
+      </div>
+    </div>
+
+  {% else %}
+
+    <div class="mb-3">
+      <label class="form-label" for="{{field.id_for_label}}">{{field.label}}</label>
+      {% render_field field class="form-control-plaintext" readonly="readonly" %}
+    </div>
+
+    {% if field == form.supporter %}
+    <div class="mb-3">
+
+      <button class="btn btn-secondary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReference" aria-expanded="false" aria-controls="collapseReference">
+        ＋参考資料をアップロードする
+      </button>
+    </div>
+    <div class="collapse" id="collapseReference">
+
+    {% elif field == form.reference_url3 %}
+    </div>
+    {% endif %}
+
+
+  {% endif %}
+
+
+  {% endfor %}
+    
+    
+    <a href="{% url "project:project_list" %}">{{request.user}}さんが作成したプロジェクト一覧はこちら</a>
+</div>
 {% endblock %}

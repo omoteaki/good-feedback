@@ -172,6 +172,12 @@ class Task(models.Model):
         verbose_name="タスクを追加した日時",
         auto_now_add=True,
     )
+    updated_at = models.DateTimeField(
+        verbose_name="タスクを更新した日時",
+        auto_now=True,
+        null=True,
+        blank=True,
+    )
     project = models.ForeignKey(
         Project,
         verbose_name="プロジェクト",

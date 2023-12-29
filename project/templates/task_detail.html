@@ -4,42 +4,52 @@
 
 <div class="container">
 
-  
-  <h5 class="border-bottom">タスク : {{object.title}}</h5>
-  
-  <p></p>
-  <p>{{object.content}}</p>
-  <p>{{object.deadline_datetime}}</p>
-  <p>{{object.added_at}}</p>
-  
-  <ul>
-    {% for feedback in feedbacks %}
-    <li>{{feedback.comment}} <span>{{feedback.user}}</span> </li>
-    {% endfor %}
-  </ul>
-  <ul>
-    {% for todo in todos %}
-    <li>{{todo}}</li>
-    {% endfor %}
-  </ul>
-  
-  <a href="{% url "project:task_edit" object.pk %}">編集する</a><br>
-  <a href="{% url "project:task_delete" object.pk %}">削除する</a>
-  
-  
+  <div class="card py-2 px-3 bg-white">
 
-  {{object.project}}
-  {% if request.user == object.project.contractor_user %}
-  <p><a href="{% url "project:add_todo" object.pk object.project_id %}">ToDoを追加する</a></p>
-  {% endif %}
+    <a href="{% url "project:project_detail" object.project.id %}">プロジェクト：{{object.project}}</a>
 
+    <div class="border-bottom d-flex justify-content-between mb-2">
+      <h5 class="mb-0" >タスク : {{object.title}}</h5>
+    {% if request.user == object.project.orderer_user %}
+      <a href="{% url "project:task_edit" object.pk %}" class="fs-6 fw-normal"><i class="bi bi-pencil"></i>編集する</a>
+    {% endif %}
+    </div>
 
-  <p><a href="{% url "feedback:feedback_add" object.pk object.project_id %}">フィードバックを送る</a></p>
-  
-  
-  <p><a href="{% url "project:task_list" object.project_id %}">タスクの一覧に戻る</a></p>
-  <p><a href="{% url "project:project_detail" object.project_id %}">プロジェクトの詳細に戻る</a></p>
-  
-  
+    <p>{{object.content}}</p>
+    
+    <small>締め切り：{{object.deadline_datetime}}</small>
+    <small>作成日時：{{object.added_at}}</small>
+    <small>更新日時：{{object.updated_at}}</small>
+
+    <div class="my-2">
+      <a href="{% url "feedback:feedback_add" object.pk %}" >フィードバックを送る</a>
+    </div>
+
+    {% if feedbacks %}
+    <ul>
+      {% for feedback in feedbacks %}
+      <li>{{feedback.comment}} <span>{{feedback.user}}</span> </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    
+    
+    {% if request.user == object.project.contractor_user %}
+    todoの一覧
+      {% if todos %}
+
+    <ul>
+      {% for todo in todos %}
+      <li>{{todo}}</li>
+      {% endfor %}
+    </ul>
+      {% else %}
+      todoはありません
+      {% endif %}
+    <a href="{% url "project:add_todo" object.pk object.project_id %}">ToDoを追加する</a>
+    {% endif %}
+    
+    <a href="{% url "project:task_list" object.project_id %}">タスクの一覧を確認する</a>
+  </div>
 </div>
 {% endblock %}

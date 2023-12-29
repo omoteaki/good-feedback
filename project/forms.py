@@ -1,21 +1,33 @@
-
-# from django.forms import ModelForm, Textarea
 from django import forms
+
 from .models import Project, Task, ToDo
+from account.models import CustomUser
 
 class CreateProjectForm(forms.ModelForm):
-    # date = forms.DateField(label="日にち")
-    # time = forms.TimeField(label="時間")
-    # deadline_datetime = forms.SplitDateTimeField(required=False)
-    deadline_datetime = forms.SplitDateTimeField()
-    # widgets = {
-    #     'date': forms.NumberInput(attrs={
-    #         "type": "date"
-    #     }),
-    #     'time': forms.NumberInput(attrs={
-    #         "type": "time"
-    #     })
-    # }
+
+    deadline_datetime = forms.SplitDateTimeField(
+        label="締め切り日時",
+        widget=forms.SplitDateTimeWidget(
+            date_attrs={"type":"date"},
+            time_attrs={"type":"time"}
+        )
+    )
+
+    
+    contractor_user = forms.ModelChoiceField(
+        CustomUser.objects,
+        to_field_name='username',
+        label='受注者のユーザーID',
+        empty_label='入力してください',
+        widget=forms.TextInput,
+        error_messages={'invalid_choice':'このユーザーID存在しません'}
+    )
+    supporter = forms.CharField(
+        label="あなたのサポーター",
+        max_length=255,
+        required=False
+    )
+
     class Meta:
         model = Project
         fields = [
@@ -30,8 +42,9 @@ class CreateProjectForm(forms.ModelForm):
             # "updated_at",
             # "orderer_user",
             "contractor_user",
-            "orderer_users",
+            # "orderer_users",
             # "contractor_users",
+            "supporter",
             "reference_image1",
             "reference_image2",
             "reference_image3",
@@ -46,15 +59,10 @@ class CreateProjectForm(forms.ModelForm):
             "reference_url3",
         ]
 
-        # widgets = {
-        #     'deadline_datetime': forms.Textarea
-        # }
-
-
-        widgets = {
-            "deadline_datetime": forms.widgets.SplitDateTimeWidget
-            # "deadline_datetime": forms.widgets.SelectDateWidget
-        }
+    def clean_supporter(self):
+        supporter = self.cleaned_data.get("supporter")
+        supporters_list = supporter.split(",")
+        return supporters_list
 
 
 
@@ -63,7 +71,6 @@ class UpdateProjectForm(forms.ModelForm):
     time = forms.TimeField(label="時間", initial="12:00")
     deadline_datetime = forms.DateTimeField(required=False)
 
-    
 
     class Meta:
         model = Project
@@ -94,24 +101,26 @@ class UpdateProjectForm(forms.ModelForm):
 
         ]
 
-        # widgets = {
-        #     'deadline_datetime': forms.Textarea
-        # }
-
-
-        # widgets = {
-        #     "deadline_datetime": forms.widgets.SplitDateTimeWidget
-        # }
 
 
 
 class ProjectProposeForm(forms.ModelForm):
+    c_supporter = forms.CharField(
+        label="あなたのサポーター",
+        max_length=255,
+        required=False
+    )
     class Meta:
         model = Project
         fields = [
             "is_accepted",
-            "contractor_users",
+            "c_supporter",
         ]
+
+    def clean_c_supporter(self):
+        c_supporter = self.cleaned_data.get("c_supporter")
+        c_supporters_list = c_supporter.split(",")
+        return c_supporters_list
 
 
 
@@ -122,10 +131,13 @@ class ProjectProposeForm(forms.ModelForm):
 class AddTaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        exclude = ('project',)
+        exclude = (
+            'project',
+            "updated_at",
+        )
 
 class ToDoCreateForm(forms.ModelForm):
     class Meta:
         model = ToDo
         # fields = "__all__"
-        exclude = ("project", "task")
+        exclude = ("project", "task", "is_done")

@@ -1,11 +1,69 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
+
 
 {% block contents %}
 
+
 <div class="container">
+  <div class="d-flex border-bottom mb-2">
+    <h5 class="mb-1">
+      {{request.user}}さんのフィードバック
+    </h5>
+  </div>
 
+  <form action="" method="post">
+  {% csrf_token %}
+  {% for field in form %}
+    {% if field == form.label_select %}
+      {% if detail_num %}
+      <div class="mb-3">
+        {% comment %} <label class="form-label" for="id_label_select">ラベル</label> {% endcomment %}
+        <select name="label_select" class="form-control shadow-none"  id="id_label_select" disabled>
+          <option value="detail0" {% if detail_num == "detail0" %}selected=""{% endif %}>ルール1</option>
+          <option value="detail1" {% if detail_num == "detail1" %}selected=""{% endif %}>ルール2</option>
+          <option value="detail2" {% if detail_num == "detail2" %}selected=""{% endif %}>ルール3</option>
+        </select>
+        <input type="hidden" name="label_select" value="{{detail_num}}">
+      </div> 
+      {% elif field.value %}
+        {{field.as_hidden}}
+      <div class="mb-3">
+        {% comment %} <label class="form-label" for="{{field.id_for_label}}">{{field.label}}</label> {% endcomment %}
+        {% render_field field class="form-control shadow-none" disabled="" %}
+        {{field.errors}}
+        {% for error in field.errors %}
+        <p>{{error}}</p>
+        {% endfor %}
+        {% comment %} {{field.value}} {% endcomment %}
+      </div>
+      {% else %}
+      <div class="mb-3">
+        {% comment %} <label class="form-label" for="id_label_select">ラベル</label> {% endcomment %}
+        <select name="label_select" class="form-control shadow-none"  id="id_label_select" disabled>
+          <option value="detail0" selected="">プロフィール1(デフォルト)</option>
+        </select>
+        <input type="hidden" name="label_select" value="detail0">
+      </div> 
+      {% endif %}
 
-  {% include "_form.html" %}
+    {% else %}
+    <div class="mb-3">
+      <label class="form-label" for="{{field.id_for_label}}">{{field.label}}</label>
+      {% render_field field class="form-control" %}
+      {{field.errors}}
+      {% for error in field.errors %}
+      <p>{{error}}</p>
+      {% endfor %}
+    </div>
+
+    {% endif %}
+
+  {% endfor %}
+  
+    <button type="submit" class="btn btn-primary">{{button_message}}</button>
+    
+  </form>
 
 </div>
 

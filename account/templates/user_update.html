@@ -6,7 +6,7 @@
 <div class="container">
   <div class="d-flex border-bottom mb-3">
     <h5 class="mb-1">
-      新規登録
+      ユーザー情報の変更
     </h5>
   </div>
 
@@ -19,9 +19,7 @@
 
         {% render_field form.username class="form-control" %}
       </div>
-      {% if form.username.help_text %}
-      <div class="form-text offset-sm-3">{{ form.username.help_text }}</div>
-      {% endif %}
+      <div class="form-text offset-sm-3">ユーザーIDを変更される場合は、一緒にお仕事されている方にもご連絡をお願いします。</div>
       {% for error in form.username.errors %}
       <p style="color: red;">{{ error }}</p>
       {% endfor %}
@@ -31,9 +29,7 @@
     <div class="row mb-3">
       <label class="col-sm-3 col-form-label" for="">お名前</label>
       <div class="col">
-        {% comment %} <label class="col-sm-2 col-form-label" for="">{{form.last_name.label}}</label> {% endcomment %}
         <div class="">
-  
           {% render_field form.last_name class="form-control" %}
         </div>
         {% if form.last_name.help_text %}
@@ -44,7 +40,6 @@
         {% endfor %}
       </div>
       <div class="col">
-        {% comment %} <label class="col-sm-2 col-form-label" for="{{form.first_name.id_for_label}}">{{form.first_name.label}}</label> {% endcomment %}
         <div class="">
           {% render_field form.first_name class="form-control" %}
         </div>
@@ -68,39 +63,12 @@
       {% if form.email.help_text %}
       <div class="form-text">{{ form.email.help_text }}</div>
       {% endif %}
-      <div class="form-text offset-sm-3">※メールアドレスはパスワードをリセットする際に必要になりますので、登録をお願いします。</div>
+      <div class="form-text offset-sm-3"></div>
       {% for error in form.email.errors %}
       <p style="color: red;">{{ error }}</p>
       {% endfor %}
     </div>
-    <div class="row mb-3">
-      <label class="col-sm-3 col-form-label" for="{{form.password1.id_for_label}}">{{form.password1.label}}</label>
-      <div class="col-sm-9">
-
-        {% render_field form.password1 class="form-control" %}
-      </div>
-      {% if form.password1.help_text %}
-      <div class="form-text offset-sm-3">{{ form.password1.help_text }}</div>
-      {% endif %}
-      {% for error in form.password1.errors %}
-      <p style="color: red;">{{ error }}</p>
-      {% endfor %}
-    </div>
-    <div class="row mb-3">
-      <label class="col-sm-3 col-form-label" for="{{form.password2.id_for_label}}">パスワード:確認用</label>
-      <div class="col-sm-9">
-
-        {% render_field form.password2 class="form-control" %}
-      </div>
-      {% if form.password2.help_text %}
-      <div class="form-text offset-sm-3">{{ form.password2.help_text }}</div>
-      {% endif %}
-      {% for error in form.password2.errors %}
-      <p style="color: red;">{{ error }}</p>
-      {% endfor %}
-    </div>
-
-    <button type="submit" class="btn btn-primary">新規登録</button>
+    <button type="submit" class="btn btn-primary">更新する</button>
 
   </form>
 
@@ -108,8 +76,8 @@
 
 
   <br>
-  <p><a href="{% url "project:index" %}">
-    登録をやめてトップページに戻る</a>
+  <p><a href="{% url "account:mypage" request.user.pk %}">
+    編集をやめてマイページに戻る</a>
   </p>
 
 

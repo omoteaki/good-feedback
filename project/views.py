@@ -1,13 +1,17 @@
 from typing import Any
-from django.shortcuts import render
+
+
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
+
 
 from datetime import date, time, datetime, timedelta
 from django.utils.timezone import make_aware
-from backports.zoneinfo import ZoneInfo
-# from zoneinfo import ZoneInfo
+# from backports.zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo
 
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Max, Min, Avg
@@ -18,9 +22,6 @@ from feedback.models import Feedback
 from account.models import UserDetail, CustomUser
 from .forms import CreateProjectForm, AddTaskForm, ToDoCreateForm, UpdateProjectForm, ProjectProposeForm
 
-
-# class MyPageView(DetailView):
-#     template_name =
 
 
 # ログインしていなかったらindex、ログインユーザーならマイページ
@@ -33,13 +34,14 @@ class IndexView(ListView):
             return request_user_projects
         else:
             pass
+
     def get_context_data(self, **kwargs):
         if  self.request.user.is_authenticated:
             context = super().get_context_data(**kwargs)
-            context["details"] = UserDetail.objects.filter(user=self.request.user)
-            # print(context["details"])
+            context["myproject"] = True
             context["closed_project"] = Project.objects.filter( Q(created_user=self.request.user)|Q(orderer_user=self.request.user)|Q(contractor_user=self.request.user)).filter(is_done=True)
             context["ordered_project_list"] = Project.objects.filter(contractor_user=self.request.user).filter(is_accepted=False)
+            context["order_project_list"] = Project.objects.filter(orderer_user=self.request.user).filter(is_accepted=False)
 
 
             for object in context["object_list"]:
@@ -52,16 +54,8 @@ class IndexView(ListView):
                 else:
                     object.int_delta = 0
 
-                # txt[:pos]
-                # print(type(object.int_delta), end=",")
-
-            # for object in context["object_list"]:
-            #     print(object.id)
-
             context["near_deadline_objects"] = context["object_list"].filter(delta__lte=timedelta(weeks=1))
 
-            # for object in context["near_deadline_objects"]:
-            #     print(object)
             return context
         else:
             pass
@@ -82,8 +76,20 @@ class ProposeProjectView(UpdateView):
 
     def form_valid(self, form):
         project = form.save(commit=False)
+        c_supporters_list = form.cleaned_data.get("c_supporter")
+
         project.save()
+        if c_supporters_list:
+            for c_supporter in c_supporters_list:
+                if c_supporter:
+                    project.contractor_users.add(CustomUser.objects.get(username=c_supporter))
+        form.save_m2m()
+
+        if not 'start_message' in self.request.session:
+            self.request.session['start_message'] = "start"
+
         return super().form_valid(form)
+
 
 class SetFeedbackView(UpdateView):
     model = Project
@@ -97,11 +103,14 @@ class SetFeedbackView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if 'start_message' in self.request.session:
+            context["start_message"] = self.request.session['start_message']
+            del self.request.session['start_message']
         context["user_detail_list"] = UserDetail.objects.filter(user_id=self.request.user)
-        print(context["user_detail_list"])
-        print(context["form"].fields["feedback_rule"].queryset)
+        # print(context["user_detail_list"])
+        # print(context["form"].fields["feedback_rule"].queryset)
         context["form"].fields["feedback_rule"].queryset = UserDetail.objects.filter(user=self.request.user)
-        print(context["form"].fields["feedback_rule"].queryset)
+        # print(context["form"].fields["feedback_rule"].queryset)
         if not 'propose_message' in self.request.session:
             self.request.session['propose_message'] = "warning"
         return context
@@ -122,60 +131,49 @@ class CreateProjectView(CreateView):
     form_class = CreateProjectForm
     template_name = "create_project.html"
 
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["created_user_id"] = self.request.user
         return context
     
     def get_success_url(self):
-        return reverse_lazy("project:create_project_done", kwargs={"created_user_id": self.request.user.id})
+        return reverse_lazy("project:create_project_done", kwargs={"pk": self.object.pk})
 
     def form_valid(self, form):
+
         new_project = form.save(commit=False)
+        supporters_list = form.cleaned_data.get("supporter")
         new_project.created_user = self.request.user
         new_project.orderer_user = self.request.user
-        # new_project.deadline_datetime = datetime.combine(form.cleaned_data["date"], form.cleaned_data["time"], tzinfo=ZoneInfo(key='Asia/Tokyo'))
+        print(supporters_list)
         new_project.save()
 
-        project_data = form.cleaned_data
-        # project_data["time"] = ""
-        # project_data["date"] = ""
-        print(project_data["title"])
-        project_data["deadline_datetime"] = ""
-        project_data["contractor_user"] = ""
-        project_data["orderer_users"] = ""
-        if not 'form_project' in self.request.session:
-            self.request.session['form_project'] = project_data
+        if supporters_list:
+            for supporter in supporters_list:
+                if supporter:
+                    new_project.orderer_users.add(CustomUser.objects.get(username=supporter))
+
+        form.save_m2m()
+
+
 
         return super().form_valid(form)
 
-class CreateProjectSuccessView(ListView):
+
+class CreateProjectSuccessView(UpdateView):
     template_name = "new_project.html"
-    # model = Project
+    model = Project
+    form_class = CreateProjectForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["new_project"] = self.request.session["form_project"]
-        return context
 
-    def get_queryset(self):
-        print(self.request.user)
-        new_project_id = Project.objects.filter(created_user = self.kwargs["created_user_id"]).aggregate(Max("id"))
-        new_project = Project.objects.get(id=new_project_id["id__max"])
-        return new_project
-    
+
 
 class ProjectListView(ListView):
     template_name = "project_list.html"
     def get_queryset(self):
         projects = Project.objects.filter(created_user= self.request.user)
         return projects
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     print(self.object_list)
-    #     return context
-    
+
 
 class ProjectDetailView(DetailView):
     template_name = "project_detail.html"
@@ -190,7 +188,6 @@ class ProjectDetailView(DetailView):
         # 本当は、projectに紐づいている、taskに紐づいているfeedbackだけ取り出したい
         context["feedbacks"] = Feedback.objects.filter(task_id__in=context["tasks"])
         # for f in context["feedbacks"]:
-        list = context["feedbacks"][1].marker_of_midi
         # print(list)
         # for li in list:
         #     print(li)
@@ -284,6 +281,7 @@ class AddTaskView(CreateView):
         context = super().get_context_data(**kwargs)
         context["button_message"] = "タスクを追加する"
         context["pk"] = self.kwargs["pk"]
+        context["project"] = Project.objects.get(id=self.kwargs["pk"])
         print(context)
         print(self.kwargs)
         return context
@@ -297,7 +295,7 @@ class AddTaskView(CreateView):
         new_task.save()
         # self.object = new_task
         return super().form_valid(form)
-    
+
 
 class TaskListView(ListView):
     template_name = "task_list.html"
@@ -305,6 +303,12 @@ class TaskListView(ListView):
     def get_queryset(self):
         Tasks = Task.objects.filter(project_id=self.kwargs["pk"])
         return Tasks
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["project"] = Project.objects.get(id=self.kwargs["pk"])
+        return context
+
 
 
 class TaskDetailView(DetailView):
@@ -317,7 +321,7 @@ class TaskDetailView(DetailView):
         context["todos"] = ToDo.objects.filter(task_id=self.object)
         print(context["feedbacks"])
         return context
-    
+
 
 class TaskEditView(UpdateView):
     template_name = "task_edit.html"
@@ -326,16 +330,19 @@ class TaskEditView(UpdateView):
         "title",
         "content",
         "deadline_datetime",
-        #更新日必要じゃない？？
     ]
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["button_message"] = "タスクを更新"
+        return context
+    
     def get_success_url(self):
         return reverse_lazy("project:task_detail", kwargs={"pk": self.object.pk})
 
     def form_valid(self, form):
         new_task = form.save(commit=False)
         new_task.save()
-        # self.object = new_task
         return super().form_valid(form)
     
 class TaskDeleteView(DeleteView):
@@ -352,6 +359,12 @@ class ToDoCreateView(CreateView):
     form_class = ToDoCreateForm
     template_name = "add_todo.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["task"] = Task.objects.get(id=self.kwargs["pk"])
+        return context
+    
+
     def get_success_url(self):
         return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["project_id"]})
 
@@ -363,7 +376,9 @@ class ToDoCreateView(CreateView):
         print(self.kwargs["pk"])
         # self.object = new_task
         return super().form_valid(form)
-    
+
+
+# 関数を追加したため、不使用
 class ToDoDoneView(UpdateView):
     template_name = "add_todo.html"
     model = ToDo
@@ -372,23 +387,53 @@ class ToDoDoneView(UpdateView):
     ]
 
     def get_success_url(self):
-        return reverse_lazy("project:project_detail", kwargs={"pk": self.kwargs["project_id"]})
+        return reverse_lazy("project:project_detail", kwargs={"pk": self.object.project.id})
 
     def form_valid(self, form):
         task = form.save(commit=False)
-        task.project_id = self.kwargs["project_id"]
         task.is_done = True
-
         task.save()
-        print(self.kwargs["pk"])
-        return super().form_valid(form)    
+        return super().form_valid(form)
     
+
+
+def todo_done(request, pk):
+    todo = get_object_or_404(ToDo, id=pk)
+    project_id = todo.project.pk
+    if todo.is_done:
+        todo.is_done = False
+        todo.save()
+    else:
+        todo.is_done = True
+        todo.save()
+
+    return HttpResponseRedirect(reverse('project:project_detail', kwargs={"pk": project_id}))
+
+
+
+
+
+# 関数を追加したため、不使用
 class ToDoDeleteView(DeleteView):
     model = ToDo
     template_name = "task_delete.html"
-    success_url = reverse_lazy("project:index")
-
+    def get_success_url(self):
+        return reverse_lazy("project:project_detail", kwargs={"pk": self.object.project.id})
 
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)
+
+
+
+
+def todo_delete(request, pk):
+    todo = get_object_or_404(ToDo, id=pk)
+    print(todo)
+    project_id = todo.project.pk
+
+    if request.POST:
+        todo.delete()
+
+    return HttpResponseRedirect(reverse('project:project_detail', kwargs={"pk": project_id}))
+
 
